@@ -25,6 +25,7 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Configuración de GitHub Pages.
 - CI con lint, tests y build.
 - Documentación de arquitectura, setup, roadmap y contribución.
+- Catálogo de assets 3D y créditos con licencias verificadas.
 - Plantillas de issues, pull request y Dependabot.
 
 ## [0.1.0] - 2026-11-06
