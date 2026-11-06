@@ -42,6 +42,8 @@ Convertir a El Alquimista Automatizado en un juego educativo donde cualquier per
 - [x] Mostrar errores de Python en la UI.
 - [x] Tests del motor con scheduler inyectado.
 - [ ] Tests de integración del protocolo Worker.
+- [x] Suelo, paredes y Gólem con modelo CC0 bajo poli.
+- [x] Sombras en escena 3D.
 
 **Criterio de salida:** `mover(1, 2)` desplaza visualmente al Gólem a la celda `(1, 2)` en un tick.
 

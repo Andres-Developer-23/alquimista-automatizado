@@ -12,7 +12,7 @@ Juego educativo de programación y lógica. El jugador escribe Python para contr
 ## Qué incluye el MVP
 
 - Editor Monaco configurado para Python.
-- Escena 3D con React Three Fiber: tablero de 5x5 y Gólem azul.
+- Escena 3D con React Three Fiber: tablero de 5x5, suelo, paredes bajas y Gólem con modelo CC0 bajo poli.
 - Movimiento animado entre celdas y rotación del Gólem, sincronizados con el tick de 500 ms.
 - Errores de Python clasificados y mostrados en un panel legible.
 - Pyodide ejecutándose dentro de un Web Worker de módulo.
@@ -109,15 +109,18 @@ src/
 ├── app/                 # composición de la aplicación y estilos de pantalla
 ├── components/
 │   ├── editor/          # Monaco
-│   ├── scene/           # Canvas R3F, grid y Gólem
+│   ├── scene/           # Canvas R3F, suelo, paredes, grid y Gólem
 │   └── ui/              # controles reutilizables
 ├── engine/
 │   ├── actions/         # contrato, validación y cola de acciones
 │   ├── tick/            # motor de ticks de 500 ms
 │   └── python/          # puente con el Web Worker
 ├── hooks/               # estado de React y ciclo de vida del Worker
+├── levels/              # definiciones de nivel en JSON
 ├── styles/              # estilos globales y tokens
 └── workers/             # Pyodide + intérprete Python
+public/
+└── models/              # modelos 3D CC0 (golem.glb)
 ```
 
 Más detalle en [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -147,7 +150,7 @@ Pasos completos en [docs/SETUP.md](docs/SETUP.md).
 ## Roadmap resumido
 
 1. **Fase 1:** scaffolding, editor, escena, Worker y conexión UI.
-2. **Fase 2:** cola de acciones, ticks de 500 ms y movimiento animado.
+2. **Fase 2:** cola de acciones, ticks de 500 ms, movimiento animado y errores Python.
 3. **Fase 3:** niveles, objetivos y validación.
 4. **Fase 4:** pulido visual, accesibilidad, sonido y release.
 
