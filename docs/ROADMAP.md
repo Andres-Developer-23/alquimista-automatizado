@@ -51,14 +51,14 @@ Convertir a El Alquimista Automatizado en un juego educativo donde cualquier per
 
 **Objetivo:** convertir la demo en un juego con objetivos.
 
-- [ ] Formato de nivel en JSON.
-- [ ] Cargador de niveles.
-- [ ] Objetivo del nivel y condición de victoria.
-- [ ] Validación de colisiones y límites del tablero.
+- [x] Formato de nivel en JSON.
+- [x] Cargador de niveles.
+- [x] Objetivo del nivel y condición de victoria.
+- [x] Validación de colisiones y límites del tablero.
 - [x] Comandos `girar(grados)` y `recoger()`.
-- [ ] Inventario y objetos recolectables.
-- [ ] Mensajes de éxito/fracaso.
-- [ ] Selector de niveles.
+- [x] Inventario y objetos recolectables.
+- [x] Mensajes de éxito/fracaso.
+- [x] Selector de niveles.
 - [ ] Tests de reglas y niveles.
 
 **Criterio de salida:** un nivel completo se puede resolver escribiendo Python y el juego detecta la victoria.
@@ -69,13 +69,13 @@ Convertir a El Alquimista Automatizado en un juego educativo donde cualquier per
 
 - [ ] Animaciones de cámara y Gólem.
 - [ ] Feedback sonoro opcional.
-- [ ] Accesibilidad: teclado, foco visible, contraste, ARIA.
+- [x] Accesibilidad: teclado, foco visible, contraste, ARIA.
 - [ ] Responsive en tablets y móviles.
-- [ ] Persistencia de progreso en `localStorage`.
+- [x] Persistencia de progreso en `localStorage`.
 - [ ] Pantalla de bienvenida y tutorial.
 - [ ] Manejo de Pyodide sin conexión.
 - [ ] Optimización del bundle.
-- [ ] Release `v1.0.0`.
+- [x] Release `v1.0.0`.
 
 **Criterio de salida:** un usuario nuevo completa el primer nivel sin ayuda externa.
 
