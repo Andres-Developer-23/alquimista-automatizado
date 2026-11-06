@@ -46,6 +46,7 @@ Reglas:
 - Mantener la rama enfocada en un solo cambio.
 - No hacer merge commits locales innecesarios; el merge final se hace por squash.
 - Eliminar la rama remota después del merge.
+- `main` está protegida: requiere PR, el check **Lint, test and build** en verde, historial lineal y no permite force pushes.
 
 ## Commits
 
