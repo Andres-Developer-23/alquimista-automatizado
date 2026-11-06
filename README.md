@@ -114,6 +114,8 @@ Más detalle en [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 - [Arquitectura](docs/ARCHITECTURE.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Setup y despliegue](docs/SETUP.md)
+- [Catálogo de assets 3D](docs/ASSETS.md)
+- [Créditos de assets](CREDITS.md)
 - [Guía de contribución](CONTRIBUTING.md)
 - [Decisiones de arquitectura](docs/adr/)
 - [Changelog](CHANGELOG.md)
