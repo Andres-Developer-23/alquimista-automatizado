@@ -121,14 +121,75 @@
   font-size: 0.78rem;
 }
 
-.error-message {
-  margin: 0;
-  border-radius: 0.4rem;
-  padding: 0.55rem 0.7rem;
+.python-error {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  border: 1px solid rgb(248 113 113 / 0.35);
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.8rem;
   background: rgb(127 29 29 / 0.35);
+  color: #fecaca;
+}
+
+.python-error__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+
+  h2 {
+    margin: 0;
+    color: #fca5a5;
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+}
+
+.python-error__badge {
+  flex: none;
+  border: 1px solid rgb(248 113 113 / 0.45);
+  border-radius: 999px;
+  padding: 0.12rem 0.4rem;
   color: #fca5a5;
-  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.python-error__message,
+.python-error__hint {
+  margin: 0;
   font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.python-error__message {
+  color: #fee2e2;
+}
+
+.python-error__hint {
+  color: #fda4af;
+}
+
+.python-error__details {
+  color: #fecaca;
+  font-size: 0.72rem;
+
+  summary {
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  pre {
+    overflow: auto;
+    margin: 0.4rem 0 0;
+    border-radius: 0.35rem;
+    padding: 0.5rem;
+    background: rgb(69 10 10 / 0.65);
+    color: #fecaca;
+    font-family: var(--font-mono);
+    white-space: pre-wrap;
+  }
 }
 
 .scene-panel {

@@ -20,7 +20,8 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Motor de ticks de 500 ms con scheduler inyectable.
 - Estado de posición del Gólem sincronizado con la escena.
 - Movimiento del Gólem interpolado entre celdas y limitado al tablero.
-- Tests unitarios de acciones, cola, ticks, estado del juego y animación.
+- Errores de Python clasificados y renderizados en un panel legible.
+- Tests unitarios de acciones, cola, ticks, estado del juego, animación y errores.
 - Configuración de GitHub Pages.
 - CI con lint, tests y build.
 - Documentación de arquitectura, setup, roadmap y contribución.

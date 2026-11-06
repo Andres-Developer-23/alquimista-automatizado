@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPythonWorker } from '../engine/python/workerBridge'
 import { normalizeActions } from '../engine/actions/actionTypes'
+import { formatPythonError } from '../engine/python/pythonError'
 
 export function usePythonWorker() {
   const workerRef = useRef(null)
@@ -27,13 +28,18 @@ export function usePythonWorker() {
       }
 
       if (message?.type === 'error') {
-        setError(message.message)
+        const fallback = formatPythonError(message.message ?? 'No se pudo ejecutar el código.')
+        setError(message.error ?? fallback)
         setStatus('error')
       }
     }
 
     worker.onerror = (event) => {
-      setError(event.message || 'No se pudo inicializar el Web Worker.')
+      const fallback = formatPythonError(
+        event.message || 'No se pudo inicializar el Web Worker.',
+        { kind: 'initialization' },
+      )
+      setError(fallback)
       setStatus('error')
     }
 

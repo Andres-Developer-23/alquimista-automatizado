@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CodeEditor } from '../components/editor/CodeEditor'
 import { AlchemistScene } from '../components/scene/AlchemistScene'
+import { PythonErrorPanel } from '../components/ui/PythonErrorPanel'
 import { RunButton } from '../components/ui/RunButton'
 import { useGameEngine } from '../hooks/useGameEngine'
 import { usePythonWorker } from '../hooks/usePythonWorker'
@@ -72,11 +73,7 @@ export function App() {
             El Gólem ejecuta una acción cada 500 ms. La respuesta JSON también se
             imprime en la consola.
           </p>
-          {error && (
-            <p className="error-message" role="alert">
-              {error}
-            </p>
-          )}
+          <PythonErrorPanel error={error} />
         </footer>
       </section>
 

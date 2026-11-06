@@ -64,7 +64,22 @@ sequenceDiagram
 | UI → Worker | `run` | `code: string` | Ejecutar código del jugador |
 | Worker → UI | `ready` | — | Pyodide terminó de inicializar |
 | Worker → UI | `result` | `actions: Action[]` | Acciones producidas |
-| Worker → UI | `error` | `message: string` | Error de Python o de inicialización |
+| Worker → UI | `error` | `message: string`, `error: PythonErrorInfo` | Error de Python o de inicialización |
+
+### Contrato de error
+
+```ts
+type PythonErrorInfo = {
+  type: 'syntax' | 'runtime' | 'initialization'
+  title: string
+  message: string
+  line: number | null
+  hint: string
+  details: string
+}
+```
+
+`formatPythonError()` convierte tracebacks crudos en este contrato. La UI usa solo los campos legibles y mantiene `details` en un bloque plegable.
 
 ### Contrato de acción
 
@@ -99,7 +114,7 @@ Reglas:
 
 ## 6. Diseño del Worker
 
-`pythonWorker.js` es un **worker clásico** porque usa `importScripts()` para cargar Pyodide desde el CDN.
+`pythonWorker.js` es un **worker de módulo** porque Pyodide carga sus assets como módulos ES desde el CDN. El Worker se crea con `type: 'module'`.
 
 Decisiones:
 
@@ -107,7 +122,7 @@ Decisiones:
 - **`pyodidePromise`:** evita inicializaciones duplicadas si llegan mensajes concurrentes.
 - **`actions.clear()` antes de cada ejecución:** cada corrida produce un resultado independiente.
 - **Serialización con `json.dumps`:** evita ambigüedades de conversión entre objetos Python y JavaScript.
-- **Errores capturados:** cualquier excepción se devuelve como mensaje estructurado, no como crash del worker.
+- **Errores capturados:** cualquier excepción se devuelve como `PythonErrorInfo`, no como crash del worker.
 
 ### Limitaciones conocidas
 
@@ -123,7 +138,7 @@ Estado de `usePythonWorker`:
 
 - `status`: `loading | ready | running | error`.
 - `lastResponse`: última lista de acciones válidas.
-- `error`: último mensaje de error.
+- `error`: último `PythonErrorInfo` o un objeto equivalente de inicialización.
 
 Reglas:
 
@@ -131,6 +146,7 @@ Reglas:
 - `run()` limpia errores y marca el estado como `running`.
 - La respuesta se valida antes de guardarla.
 - El `console.log` de la respuesta es parte del contrato de la fase 1.
+- `PythonErrorPanel` distingue `syntax`, `runtime` e `initialization` y muestra línea, sugerencia y detalle plegable.
 
 `useGameEngine` expone `position`, `isPlaying`, `play(actions)` y `stop()`:
 
