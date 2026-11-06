@@ -8,7 +8,7 @@ const RADIANS = Math.PI / 180
 
 function GolemModel({ position, rotation, reducedMotion }) {
   const meshRef = useRef(null)
-  const { scene } = useGLTF('/models/golem.glb')
+  const { scene } = useGLTF(import.meta.env.BASE_URL + 'models/golem.glb')
   const [initialPosition] = useState(position)
   const [initialRotation] = useState(rotation)
 
