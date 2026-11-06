@@ -90,7 +90,8 @@ Reglas:
 | `src/components/editor` | Configurar Monaco | Conocer el protocolo del Worker |
 | `src/components/scene` | Renderizar tablero y entidades | Decidir reglas del juego |
 | `src/components/ui` | Controles visuales reutilizables | Manejar estado global |
-| `src/engine/actions` | Definir tipos y validar acciones | Renderizar |
+| `src/engine/actions` | Definir tipos, validar acciones y encolar | Renderizar |
+| `src/engine/tick` | Consumir la cola por ticks | Conocer React o el DOM |
 | `src/engine/python` | Crear el Worker | Interpretar reglas de juego |
 | `src/hooks` | Ciclo de vida y estado de React | Contener lógica de Pyodide |
 | `src/workers` | Cargar Pyodide y ejecutar código | Acceder al DOM |
@@ -116,9 +117,9 @@ Decisiones:
 
 ## 7. Estado de React
 
-El hook `usePythonWorker` es la frontera entre React y el Worker.
+`usePythonWorker` es la frontera entre React y el Worker. `useGameEngine` es la frontera entre las acciones y el estado del juego.
 
-Estado actual:
+Estado de `usePythonWorker`:
 
 - `status`: `loading | ready | running | error`.
 - `lastResponse`: última lista de acciones válidas.
@@ -131,28 +132,34 @@ Reglas:
 - La respuesta se valida antes de guardarla.
 - El `console.log` de la respuesta es parte del contrato de la fase 1.
 
-## 8. Sistema de ticks (Fase 2)
+`useGameEngine` expone `position`, `isPlaying`, `play(actions)` y `stop()`:
 
-La fase 2 introducirá un motor determinista:
+- `play()` cancela la reproducción anterior, vacía la cola y encola las acciones nuevas.
+- `stop()` detiene el temporizador y descarta las acciones pendientes.
+- La posición se actualiza cuando el tick engine consume una acción.
+
+## 8. Sistema de ticks
+
+El motor es determinista:
 
 ```text
-lastResponse -> cola -> tick cada 500 ms -> estado del juego -> escena
+lastResponse -> cola FIFO -> tick cada 500 ms -> posición -> escena
 ```
 
-Diseño previsto:
+Componentes:
 
-- `tickEngine.js` expone `start(queue, onTick, intervalMs)` y `stop()`.
-- Cada tick consume **una** acción.
-- La escena interpola la posición del Gólem durante el intervalo.
-- La cola se cancela si el jugador vuelve a ejecutar o si ocurre un error.
-- Los tests del motor no dependerán de `setInterval` real; se inyectará un scheduler.
+- `createActionQueue()` mantiene una cola FIFO con `enqueue`, `enqueueAll`, `dequeue`, `clear`, `size`, `isEmpty` y `toArray`.
+- `createTickEngine()` expone `start()`, `stop()` e `isRunning`.
+- Cada tick consume **una** acción y llama `onTick(action)`.
+- Al vaciarse la cola, el motor se detiene y llama `onComplete()`.
+- El scheduler se inyecta en los tests; por defecto usa `setInterval` y `clearInterval`.
 
-No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
+La escena aún no interpola el movimiento entre celdas: eso corresponde a la issue #12. No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
 
 ## 9. Escena 3D
 
 - `AlchemistScene` monta el `Canvas`, luces, grid y controles de órbita.
-- `Golem` es una entidad visual simple; en fase 2 recibirá posición y rotación desde el estado del juego.
+- `Golem` recibe la posición desde `useGameEngine` y se dibuja en `[x, 0.5, y]`.
 - El grid usa `GridHelper` con tamaño 5 y 5 divisiones.
 - La cámara y los controles están limitados para evitar vistas confusas.
 

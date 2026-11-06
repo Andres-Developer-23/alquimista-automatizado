@@ -97,7 +97,8 @@ src/
 │   ├── scene/           # Canvas R3F, grid y Gólem
 │   └── ui/              # controles reutilizables
 ├── engine/
-│   ├── actions/         # contrato y validación de acciones
+│   ├── actions/         # contrato, validación y cola de acciones
+│   ├── tick/            # motor de ticks de 500 ms
 │   └── python/          # puente con el Web Worker
 ├── hooks/               # estado de React y ciclo de vida del Worker
 ├── styles/              # estilos globales y tokens
