@@ -26,7 +26,19 @@ describe('useGameEngine', () => {
 
     act(() => vi.advanceTimersByTime(500))
     expect(result.current.position).toEqual({ x: -1, y: 0 })
+    expect(result.current.isPlaying).toBe(true)
+
+    act(() => vi.advanceTimersByTime(500))
     expect(result.current.isPlaying).toBe(false)
+  })
+
+  it('clamps actions to the board limits', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    act(() => result.current.play([mover(9, -9)]))
+    act(() => vi.advanceTimersByTime(500))
+
+    expect(result.current.position).toEqual({ x: 2, y: -2 })
   })
 
   it('stops playback when requested', () => {

@@ -37,7 +37,7 @@ Convertir a El Alquimista Automatizado en un juego educativo donde cualquier per
 - [x] Implementar cola de acciones.
 - [x] Implementar `tickEngine` con intervalo de 500 ms.
 - [x] Cancelar ejecuciones anteriores al volver a presionar Ejecutar.
-- [ ] Animar el Gólem entre celdas.
+- [x] Animar el Gólem entre celdas.
 - [x] Sincronizar la escena con el estado del juego.
 - [ ] Mostrar errores de Python en la UI.
 - [x] Tests del motor con scheduler inyectado.

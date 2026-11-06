@@ -136,7 +136,8 @@ Reglas:
 
 - `play()` cancela la reproducción anterior, vacía la cola y encola las acciones nuevas.
 - `stop()` detiene el temporizador y descarta las acciones pendientes.
-- La posición se actualiza cuando el tick engine consume una acción.
+- La posición objetivo se actualiza cuando el tick engine consume una acción y se limita a las coordenadas `-2..2` del tablero.
+- `isPlaying` se mantiene activo durante el último tick para que la animación termine antes de mostrar `Listo`.
 
 ## 8. Sistema de ticks
 
@@ -154,13 +155,13 @@ Componentes:
 - Al vaciarse la cola, el motor se detiene y llama `onComplete()`.
 - El scheduler se inyecta en los tests; por defecto usa `setInterval` y `clearInterval`.
 
-La escena aún no interpola el movimiento entre celdas: eso corresponde a la issue #12. No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
+`Golem` interpola visualmente hacia la posición objetivo con `useFrame` y amortiguación exponencial (`lambda = 12`), de modo que recorre una celda en aproximadamente 500 ms sin sobrepasarla. La interpolación es monótona: si la posición lógica está dentro del tablero, el Gólem tampoco sale de él. No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
 
 ## 9. Escena 3D
 
 - `AlchemistScene` monta el `Canvas`, luces, grid y controles de órbita.
-- `Golem` recibe la posición desde `useGameEngine` y se dibuja en `[x, 0.5, y]`.
-- El grid usa `GridHelper` con tamaño 5 y 5 divisiones.
+- `Golem` recibe la posición objetivo desde `useGameEngine`, se dibuja en `[x, 0.5, y]` y se mueve con `useFrame`.
+- El grid usa `GridHelper` con tamaño 5 y 5 divisiones; las celdas válidas van de `-2` a `2`.
 - La cámara y los controles están limitados para evitar vistas confusas.
 
 ## 10. Build y despliegue
