@@ -15,13 +15,23 @@ describe('useGameEngine', () => {
     vi.useRealTimers()
   })
 
+  it('starts at the level start position', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    expect(result.current.position).toEqual({ x: -2, y: -2 })
+    expect(result.current.rotation).toBe(0)
+    expect(result.current.inventory).toBe(0)
+    expect(result.current.isWon).toBe(false)
+    expect(result.current.level.id).toBe('nivel-01')
+  })
+
   it('moves the golem one action per tick', () => {
     const { result } = renderHook(() => useGameEngine())
 
     act(() => result.current.play([mover(1, 2), mover(-1, 0)]))
 
     expect(result.current.isPlaying).toBe(true)
-    expect(result.current.position).toEqual({ x: 0, y: 0 })
+    expect(result.current.position).toEqual({ x: -2, y: -2 })
 
     act(() => vi.advanceTimersByTime(500))
     expect(result.current.position).toEqual({ x: 1, y: 2 })
@@ -63,7 +73,7 @@ describe('useGameEngine', () => {
     expect(result.current.inventory).toBe(1)
 
     act(() => result.current.play([girar(45)]))
-    expect(result.current.position).toEqual({ x: 0, y: 0 })
+    expect(result.current.position).toEqual({ x: -2, y: -2 })
     expect(result.current.rotation).toBe(0)
     expect(result.current.inventory).toBe(0)
   })
@@ -77,6 +87,37 @@ describe('useGameEngine', () => {
     expect(result.current.position).toEqual({ x: 2, y: -2 })
   })
 
+  it('does not move into an obstacle', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    act(() => result.current.play([mover(0, 0)]))
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.position).toEqual({ x: -2, y: -2 })
+    expect(result.current.isPlaying).toBe(true)
+
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.isPlaying).toBe(false)
+  })
+
+  it('detects victory when the golem reaches the goal', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    act(() => result.current.play([mover(-2, 0), mover(0, 2), mover(2, 2)]))
+
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.position).toEqual({ x: -2, y: 0 })
+    expect(result.current.isWon).toBe(false)
+
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.position).toEqual({ x: 0, y: 2 })
+    expect(result.current.isWon).toBe(false)
+
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.position).toEqual({ x: 2, y: 2 })
+    expect(result.current.isWon).toBe(true)
+    expect(result.current.isPlaying).toBe(false)
+  })
+
   it('stops playback when requested', () => {
     const { result } = renderHook(() => useGameEngine())
 
@@ -84,7 +125,23 @@ describe('useGameEngine', () => {
     act(() => result.current.stop())
     act(() => vi.advanceTimersByTime(1000))
 
-    expect(result.current.position).toEqual({ x: 0, y: 0 })
+    expect(result.current.position).toEqual({ x: -2, y: -2 })
+    expect(result.current.isPlaying).toBe(false)
+  })
+
+  it('reiniciar nivel restablece posición, rotación e inventario', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    act(() => result.current.play([mover(1, 2), recoger()]))
+    act(() => vi.advanceTimersByTime(1000))
+    expect(result.current.position).toEqual({ x: 1, y: 2 })
+    expect(result.current.inventory).toBe(1)
+
+    act(() => result.current.resetLevel())
+    expect(result.current.position).toEqual({ x: -2, y: -2 })
+    expect(result.current.rotation).toBe(0)
+    expect(result.current.inventory).toBe(0)
+    expect(result.current.isWon).toBe(false)
     expect(result.current.isPlaying).toBe(false)
   })
 })
