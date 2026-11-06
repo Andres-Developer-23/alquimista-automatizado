@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createActionQueue } from '../engine/actions/actionQueue'
 import { TICK_INTERVAL_MS, createTickEngine } from '../engine/tick/tickEngine'
 import { clampPointToBoard, isGoal, isObstacle } from '../engine/levels/level'
+import { SHOP_OBSTACLES } from '../engine/levels/level'
 import { getLevel, getLevelIds } from '../engine/levels/levelsRegistry'
 
 const INITIAL_INVENTORY = 0
@@ -50,7 +51,8 @@ export function useGameEngine({ levelId } = {}) {
       onTick: (action) => {
         if (action.action === 'MOVER') {
           const target = clampPointToBoard(action, level.board)
-          if (isObstacle(target, level.obstacles)) return
+          const allObstacles = [...level.obstacles, ...SHOP_OBSTACLES]
+          if (isObstacle(target, allObstacles)) return
 
           setEnginePosition(target)
           if (isGoal(target, level.goal)) finishLevel()

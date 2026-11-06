@@ -97,3 +97,9 @@ export function isObstacle(point, obstacles = []) {
 export function isGoal(point, goal) {
   return sameCoordinate(point, goal)
 }
+
+// Obstáculos decorativos de la tienda (mostrador, estantes, productos).
+// Por ahora están fuera del área jugable del tablero (-2..2), por lo que el
+// arreglo está vacío. Si se reposicionan dentro del tablero, añádelos aquí para
+// que el Gólem no pueda atravesarlos.
+export const SHOP_OBSTACLES = Object.freeze([])
