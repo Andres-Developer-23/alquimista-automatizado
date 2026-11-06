@@ -3,6 +3,7 @@ import { CodeEditor } from '../components/editor/CodeEditor'
 import { AlchemistScene } from '../components/scene/AlchemistScene'
 import { PythonErrorPanel } from '../components/ui/PythonErrorPanel'
 import { RunButton } from '../components/ui/RunButton'
+import { useLevels } from '../hooks/useLevels'
 import { useGameEngine } from '../hooks/useGameEngine'
 import { usePythonWorker } from '../hooks/usePythonWorker'
 import './App.css'
@@ -25,7 +26,15 @@ export function App() {
   const [code, setCode] = useState(DEFAULT_CODE)
   const { status, lastResponse, error, run } = usePythonWorker()
   const {
-    level,
+    levels,
+    currentLevelId,
+    selectLevel,
+    completeLevel,
+    resetProgress,
+    isCompleted,
+  } = useLevels()
+  const {
+    level: gameLevel,
     position,
     rotation,
     inventory,
@@ -34,7 +43,7 @@ export function App() {
     play,
     stop,
     resetLevel,
-  } = useGameEngine()
+  } = useGameEngine({ levelId: currentLevelId })
   const isBusy = status === 'loading' || status === 'running'
   const showPlaying = isPlaying && status !== 'error'
   const statusClass = showPlaying ? 'running' : status
@@ -47,6 +56,10 @@ export function App() {
   useEffect(() => {
     if (error) stop()
   }, [error, stop])
+
+  useEffect(() => {
+    if (isWon && gameLevel) completeLevel(gameLevel.id)
+  }, [isWon, gameLevel, completeLevel])
 
   return (
     <main className="app-shell">
@@ -67,11 +80,39 @@ export function App() {
 
         <div className="level-brief">
           <div>
-            <p className="level-kicker">Nivel 1 · {level.title}</p>
-            <p className="level-objective">{level.objective}</p>
+            <p className="level-kicker">Niveles</p>
+            <p className="level-objective">{gameLevel.objective}</p>
           </div>
+
+          <div className="level-pills" role="group" aria-label="Seleccionar nivel">
+            {levels.map((lvl) => (
+              <button
+                key={lvl.id}
+                type="button"
+                className={`level-pill ${
+                  currentLevelId === lvl.id ? 'level-pill--active' : ''
+                } ${isCompleted(lvl.id) ? 'level-pill--done' : ''}`}
+                onClick={() => selectLevel(lvl.id)}
+                aria-current={currentLevelId === lvl.id ? 'true' : undefined}
+                aria-label={isCompleted(lvl.id)
+                  ? `${lvl.title} (completado)`
+                  : lvl.title}
+              >
+                {lvl.title}
+                {isCompleted(lvl.id) && (
+                  <span className="level-pill__done" aria-hidden="true">
+                    ✓
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
           <button className="reset-button" type="button" onClick={resetLevel}>
             Reiniciar nivel
+          </button>
+          <button className="reset-progress-button" type="button" onClick={resetProgress}>
+            Borrar progreso
           </button>
         </div>
 
@@ -116,8 +157,8 @@ export function App() {
         <AlchemistScene
           golemPosition={[position.x, 0.5, position.y]}
           golemRotation={rotation}
-          goal={level.goal}
-          obstacles={level.obstacles}
+          goal={gameLevel.goal}
+          obstacles={gameLevel.obstacles}
         />
       </section>
     </main>

@@ -1,29 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createActionQueue } from '../engine/actions/actionQueue'
 import { TICK_INTERVAL_MS, createTickEngine } from '../engine/tick/tickEngine'
-import {
-  clampPointToBoard,
-  createLevel,
-  isGoal,
-  isObstacle,
-} from '../engine/levels/level'
-import firstLevel from '../levels/nivel-01.json'
+import { clampPointToBoard, isGoal, isObstacle } from '../engine/levels/level'
+import { getLevel, getLevelIds } from '../engine/levels/levelsRegistry'
 
-const FIRST_LEVEL = createLevel(firstLevel)
 const INITIAL_INVENTORY = 0
 
 // Los grados negativos deben envolver, no saltar directamente.
 const normalizeRotation = (degrees) => ((degrees % 360) + 360) % 360
 
-export function useGameEngine() {
+export function useGameEngine({ levelId } = {}) {
+  const resolvedLevelId = levelId ?? getLevelIds()[0]
   const queueRef = useRef(null)
   const engineRef = useRef(null)
   const completionTimerRef = useRef(null)
   const [position, setPosition] = useState({
-    x: FIRST_LEVEL.start.x,
-    y: FIRST_LEVEL.start.y,
+    x: getLevel(resolvedLevelId).start.x,
+    y: getLevel(resolvedLevelId).start.y,
   })
-  const [rotation, setRotation] = useState(FIRST_LEVEL.start.rotation)
+  const [rotation, setRotation] = useState(getLevel(resolvedLevelId).start.rotation)
   const [inventory, setInventory] = useState(INITIAL_INVENTORY)
   const [isWon, setIsWon] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -39,7 +34,9 @@ export function useGameEngine() {
   }, [])
 
   useEffect(() => {
+    const level = getLevel(resolvedLevelId)
     const queue = createActionQueue()
+
     const finishLevel = () => {
       clearCompletionTimer()
       engineRef.current?.stop()
@@ -52,11 +49,11 @@ export function useGameEngine() {
       queue,
       onTick: (action) => {
         if (action.action === 'MOVER') {
-          const target = clampPointToBoard(action, FIRST_LEVEL.board)
-          if (isObstacle(target, FIRST_LEVEL.obstacles)) return
+          const target = clampPointToBoard(action, level.board)
+          if (isObstacle(target, level.obstacles)) return
 
           setEnginePosition(target)
-          if (isGoal(target, FIRST_LEVEL.goal)) finishLevel()
+          if (isGoal(target, level.goal)) finishLevel()
           return
         }
 
@@ -78,6 +75,13 @@ export function useGameEngine() {
       },
     })
 
+    // Restablece el estado visible al cambiar de nivel.
+    setEnginePosition({ x: level.start.x, y: level.start.y })
+    setRotation(level.start.rotation)
+    setInventory(INITIAL_INVENTORY)
+    setIsWon(false)
+    setIsPlaying(false)
+
     queueRef.current = queue
     engineRef.current = engine
 
@@ -88,18 +92,19 @@ export function useGameEngine() {
       queueRef.current = null
       engineRef.current = null
     }
-  }, [clearCompletionTimer, setEnginePosition])
+  }, [resolvedLevelId, clearCompletionTimer, setEnginePosition])
 
   const resetLevel = useCallback(() => {
     clearCompletionTimer()
     engineRef.current?.stop()
     queueRef.current?.clear()
-    setEnginePosition({ x: FIRST_LEVEL.start.x, y: FIRST_LEVEL.start.y })
-    setRotation(FIRST_LEVEL.start.rotation)
+    const level = getLevel(resolvedLevelId)
+    setEnginePosition({ x: level.start.x, y: level.start.y })
+    setRotation(level.start.rotation)
     setInventory(INITIAL_INVENTORY)
     setIsWon(false)
     setIsPlaying(false)
-  }, [clearCompletionTimer, setEnginePosition])
+  }, [clearCompletionTimer, resolvedLevelId, setEnginePosition])
 
   const play = useCallback(
     (actions) => {
@@ -126,7 +131,7 @@ export function useGameEngine() {
   }, [clearCompletionTimer])
 
   return {
-    level: FIRST_LEVEL,
+    level: getLevel(resolvedLevelId),
     position,
     rotation,
     inventory,

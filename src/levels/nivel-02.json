@@ -1,0 +1,10 @@
+{
+  "id": "nivel-02",
+  "title": "El segundo encargo",
+  "description": "Hay una pared de rocas entre el Gólem y el caldero. Róda el obstáculo y llega a la meta.",
+  "objective": "Llega hasta el caldero sin atravesar las rocas.",
+  "board": { "minX": -2, "maxX": 2, "minY": -2, "maxY": 2 },
+  "start": { "x": 2, "y": -2, "rotation": 0 },
+  "goal": { "x": -2, "y": 2 },
+  "obstacles": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }]
+}
