@@ -1,7 +1,7 @@
 {
   "name": "alquimista-automatizado",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Juego educativo de programación en Python que controla un Gólem en un entorno 3D.",
   "homepage": "https://andres-developer-23.github.io/alquimista-automatizado/",

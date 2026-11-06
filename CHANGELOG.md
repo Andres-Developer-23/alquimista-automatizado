@@ -9,6 +9,12 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 
+- Pendiente de cambios post-v1.0.0.
+
+## [1.0.0] - 2026-11-06
+
+### Added
+
 - Scaffolding de Vite + React.
 - Layout dividido con Monaco Editor y escena 3D.
 - Tablero de 5x5 con `GridHelper` y Gólem dummy azul.
@@ -29,12 +35,10 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Documentación de arquitectura, setup, roadmap y contribución.
 - Catálogo de assets 3D y créditos con licencias verificadas.
 - Plantillas de issues, pull request y Dependabot.
+- Selector de niveles y progreso persistente en `localStorage`.
+- Nivel 2 y condición de victoria con caldero y obstáculos.
+- Accesibilidad: foco visible, `aria-label`, `role="status"` y `role="alert"`, `prefers-reduced-motion`.
 
-## [0.1.0] - 2026-11-06
-
-### Added
-
-- Versión inicial del MVP de El Alquimista Automatizado.
-
-[Unreleased]: https://github.com/Andres-Developer-23/alquimista-automatizado/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Andres-Developer-23/alquimista-automatizado/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Andres-Developer-23/alquimista-automatizado/releases/tag/v1.0.0
 [0.1.0]: https://github.com/Andres-Developer-23/alquimista-automatizado/releases/tag/v0.1.0
