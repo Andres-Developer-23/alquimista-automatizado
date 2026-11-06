@@ -48,7 +48,7 @@ export function AlchemistScene({
         <meshStandardMaterial color="#7c4d26" roughness={0.95} metalness={0} />
       </mesh>
 
-      {/* Mostrador largo de la tienda (contra la pared trasera) */}
+      {/* Mostrador de la tienda */}
       <mesh
         name="counter"
         position={[0, 0.75, -2.1]}
@@ -69,7 +69,7 @@ export function AlchemistScene({
         <meshStandardMaterial color="#5a4a3d" roughness={0.9} metalness={0.05} />
       </mesh>
 
-      {/* Estante izquierdo contra la pared */}
+      {/* Estante izquierdo */}
       <mesh
         name="shelf-left"
         position={[-2.0, 0.9, -2.0]}
@@ -79,7 +79,7 @@ export function AlchemistScene({
         <boxGeometry args={[1.4, 1.8, 0.4]} />
         <meshStandardMaterial color="#6b5b4b" roughness={0.9} metalness={0.1} />
       </mesh>
-      {/* Estante derecho contra la pared */}
+      {/* Estante derecho */}
       <mesh
         name="shelf-right"
         position={[2.0, 0.9, -2.0]}
@@ -144,28 +144,6 @@ export function AlchemistScene({
       <mesh name="shelf-product-4" position={[2.6, 1.7, -2.0]} castShadow receiveShadow>
         <boxGeometry args={[0.3, 0.3, 0.3]} />
         <meshStandardMaterial color="#f43f5e" roughness={0.5} metalness={0.4} />
-      </mesh>
-
-      {/* Puerta de entrada en la pared delantera */}
-      <mesh
-        name="door-frame"
-        position={[0, WALL_HEIGHT / 2, BOARD_EDGE - 0.13]}
-        rotation={[0, Math.PI, 0]}
-        castShadow
-        receiveShadow
-      >
-        <boxGeometry args={[1.0, WALL_HEIGHT - 0.4, WALL_THICKNESS * 2]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.95} metalness={0.05} />
-      </mesh>
-      <mesh
-        name="door"
-        position={[0, WALL_HEIGHT / 2 - 0.2, BOARD_EDGE - 0.14]}
-        rotation={[0, Math.PI, 0]}
-        castShadow
-        receiveShadow
-      >
-        <boxGeometry args={[0.85, WALL_HEIGHT - 0.6, 0.1]} />
-        <meshStandardMaterial color="#4c1d1d" roughness={0.9} metalness={0.1} />
       </mesh>
 
       <gridHelper args={[5, 5, '#9ca3af', '#6b7280']} />
