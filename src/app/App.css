@@ -115,6 +115,27 @@
   font-size: 0.8rem;
 }
 
+.inventory-count {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+}
+
+.command-help {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.command-help code {
+  border: 1px solid var(--color-border);
+  border-radius: 0.35rem;
+  padding: 0.18rem 0.4rem;
+  color: #bfdbfe;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
 .hint {
   margin: 0;
   color: var(--color-muted);

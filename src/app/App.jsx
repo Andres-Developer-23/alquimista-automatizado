@@ -8,8 +8,10 @@ import { usePythonWorker } from '../hooks/usePythonWorker'
 import './App.css'
 
 const DEFAULT_CODE = `# El Gólem obedece tus comandos.
-# Cada llamada a mover() se convierte en una acción.
+# Cada llamada se convierte en una acción.
 mover(1, 2)
+girar(90)
+recoger()
 `
 
 const STATUS_LABELS = {
@@ -22,7 +24,7 @@ const STATUS_LABELS = {
 export function App() {
   const [code, setCode] = useState(DEFAULT_CODE)
   const { status, lastResponse, error, run } = usePythonWorker()
-  const { position, isPlaying, play, stop } = useGameEngine()
+  const { position, rotation, inventory, isPlaying, play, stop } = useGameEngine()
   const isBusy = status === 'loading' || status === 'running'
   const showPlaying = isPlaying && status !== 'error'
   const statusClass = showPlaying ? 'running' : status
@@ -68,17 +70,27 @@ export function App() {
                 {lastResponse.length === 1 ? 'acción' : 'acciones'}
               </span>
             )}
+            <span className="inventory-count" role="status">
+              Inventario: {inventory} {inventory === 1 ? 'objeto' : 'objetos'}
+            </span>
           </div>
+          <p className="command-help" aria-label="Comandos disponibles">
+            <code>mover(1, 2)</code>
+            <code>girar(90)</code>
+            <code>recoger()</code>
+          </p>
           <p className="hint">
-            El Gólem ejecuta una acción cada 500 ms. La respuesta JSON también se
-            imprime en la consola.
+            mover cambia de celda, girar rota al Gólem y recoger incrementa el inventario. Una acción se ejecuta cada 500 ms.
           </p>
           <PythonErrorPanel error={error} />
         </footer>
       </section>
 
       <section className="scene-panel" aria-label="Escena 3D del Gólem">
-        <AlchemistScene golemPosition={[position.x, 0.5, position.y]} />
+        <AlchemistScene
+          golemPosition={[position.x, 0.5, position.y]}
+          golemRotation={rotation}
+        />
       </section>
     </main>
   )

@@ -13,10 +13,11 @@ Juego educativo de programación y lógica. El jugador escribe Python para contr
 
 - Editor Monaco configurado para Python.
 - Escena 3D con React Three Fiber: tablero de 5x5 y Gólem azul.
-- Movimiento animado entre celdas, sincronizado con el tick de 500 ms.
+- Movimiento animado entre celdas y rotación del Gólem, sincronizados con el tick de 500 ms.
 - Errores de Python clasificados y mostrados en un panel legible.
-- Pyodide ejecutándose dentro de un Web Worker.
-- Funciones Python inyectadas (`mover(x, y)`) que generan un arreglo JSON de acciones.
+- Pyodide ejecutándose dentro de un Web Worker de módulo.
+- Funciones Python inyectadas (`mover(x, y)`, `girar(grados)` y `recoger()`) que generan un arreglo JSON de acciones.
+- Inventario lógico de `recoger()` visible en la UI.
 - Botón **Ejecutar** que envía el código al Worker y muestra la respuesta en la consola.
 - Base configurada para publicar en GitHub Pages.
 
@@ -29,7 +30,7 @@ Juego educativo de programación y lógica. El jugador escribe Python para contr
 | Editor | `@monaco-editor/react` |
 | 3D | `@react-three/fiber`, `@react-three/drei`, Three.js |
 | Python | Pyodide 0.25.0 desde CDN |
-| Aislamiento | Web Worker clásico |
+| Aislamiento | Web Worker de módulo |
 | Tests | Vitest + Testing Library |
 | CI/CD | GitHub Actions + GitHub Pages |
 
@@ -68,7 +69,7 @@ Editor Python
     │  postMessage({ type: 'run', code })
     ▼
 Web Worker
-    │  Pyodide evalúa el código con mover() inyectado
+    │  Pyodide evalúa el código con mover(), girar() y recoger() inyectados
     │  json.dumps(actions)
     ▼
 React
@@ -85,8 +86,20 @@ Contrato actual del Worker:
 ```json
 {
   "type": "result",
-  "actions": [{ "action": "MOVER", "x": 1, "y": 2 }]
+  "actions": [
+    { "action": "MOVER", "x": 1, "y": 2 },
+    { "action": "GIRAR", "grados": 90 },
+    { "action": "RECOGER" }
+  ]
 }
+```
+
+Comandos inyectados en Python:
+
+```python
+mover(1, 2)
+girar(90)
+recoger()
 ```
 
 ## Estructura del proyecto

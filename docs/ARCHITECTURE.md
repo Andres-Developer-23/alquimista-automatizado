@@ -32,7 +32,7 @@ flowchart LR
     G --> R[Escena React Three Fiber]
 ```
 
-En la fase actual, la cola y los ticks todavía no están implementados. El resultado se registra en consola y se muestra el número de acciones.
+La cola y los ticks alimentan el estado del juego; `MOVER` desplaza al Gólem, `GIRAR` rota su Mesh y `RECOGER` incrementa el inventario lógico de la ejecución.
 
 ## 4. Flujo de una ejecución
 
@@ -89,12 +89,24 @@ type MoveAction = {
   x: number
   y: number
 }
+
+type TurnAction = {
+  action: 'GIRAR'
+  grados: number
+}
+
+type CollectAction = {
+  action: 'RECOGER'
+}
+
+type GameAction = MoveAction | TurnAction | CollectAction
 ```
 
 Reglas:
 
 - `x` e `y` deben ser enteros.
-- Las acciones desconocidas se descartan en `normalizeActions`.
+- `GIRAR` acepta un número finito en `grados`; `RECOGER` no lleva campos adicionales.
+- Las acciones desconocidas o inválidas se descartan en `normalizeActions`.
 - El Worker no conoce el estado del juego; solo traduce Python a datos.
 
 ## 5. Responsabilidades por carpeta
@@ -148,11 +160,12 @@ Reglas:
 - El `console.log` de la respuesta es parte del contrato de la fase 1.
 - `PythonErrorPanel` distingue `syntax`, `runtime` e `initialization` y muestra línea, sugerencia y detalle plegable.
 
-`useGameEngine` expone `position`, `isPlaying`, `play(actions)` y `stop()`:
+`useGameEngine` expone `position`, `rotation`, `inventory`, `isPlaying`, `play(actions)` y `stop()`:
 
-- `play()` cancela la reproducción anterior, vacía la cola y encola las acciones nuevas.
-- `stop()` detiene el temporizador y descarta las acciones pendientes.
+- `play()` cancela la reproducción anterior, reinicia la posición, la rotación y el inventario, vacía la cola y encola las acciones nuevas.
+- `stop()` detiene el temporizador y descarta las acciones pendientes sin reiniciar el estado visible.
 - La posición objetivo se actualiza cuando el tick engine consume una acción y se limita a las coordenadas `-2..2` del tablero.
+- `GIRAR` normaliza los grados a un giro de `0..359`; `RECOGER` incrementa el inventario lógico.
 - `isPlaying` se mantiene activo durante el último tick para que la animación termine antes de mostrar `Listo`.
 
 ## 8. Sistema de ticks
@@ -160,7 +173,7 @@ Reglas:
 El motor es determinista:
 
 ```text
-lastResponse -> cola FIFO -> tick cada 500 ms -> posición -> escena
+lastResponse -> cola FIFO -> tick cada 500 ms -> posición / rotación / inventario -> escena
 ```
 
 Componentes:
@@ -171,12 +184,12 @@ Componentes:
 - Al vaciarse la cola, el motor se detiene y llama `onComplete()`.
 - El scheduler se inyecta en los tests; por defecto usa `setInterval` y `clearInterval`.
 
-`Golem` interpola visualmente hacia la posición objetivo con `useFrame` y amortiguación exponencial (`lambda = 12`), de modo que recorre una celda en aproximadamente 500 ms sin sobrepasarla. La interpolación es monótona: si la posición lógica está dentro del tablero, el Gólem tampoco sale de él. No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
+`Golem` interpola visualmente hacia la posición objetivo con `useFrame` y amortiguación exponencial (`lambda = 12`), de modo que recorre una celda en aproximadamente 500 ms sin sobrepasarla; los giros usan el camino angular más corto. La interpolación es monótona: si la posición lógica está dentro del tablero, el Gólem tampoco sale de él. No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
 
 ## 9. Escena 3D
 
 - `AlchemistScene` monta el `Canvas`, luces, grid y controles de órbita.
-- `Golem` recibe la posición objetivo desde `useGameEngine`, se dibuja en `[x, 0.5, y]` y se mueve con `useFrame`.
+- `Golem` recibe la posición y orientación objetivo desde `useGameEngine`, se dibuja en `[x, 0.5, y]` y se mueve/rota con `useFrame`.
 - El grid usa `GridHelper` con tamaño 5 y 5 divisiones; las celdas válidas van de `-2` a `2`.
 - La cámara y los controles están limitados para evitar vistas confusas.
 

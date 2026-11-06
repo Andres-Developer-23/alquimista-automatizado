@@ -21,7 +21,9 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Estado de posición del Gólem sincronizado con la escena.
 - Movimiento del Gólem interpolado entre celdas y limitado al tablero.
 - Errores de Python clasificados y renderizados en un panel legible.
-- Tests unitarios de acciones, cola, ticks, estado del juego, animación y errores.
+- Comandos Python `girar(grados)` y `recoger()` con validación y rotación/inventario en el motor.
+- Ayuda de comandos y contador de inventario visibles.
+- Tests unitarios de acciones, cola, ticks, estado del juego, animación, errores e inventario.
 - Configuración de GitHub Pages.
 - CI con lint, tests y build.
 - Documentación de arquitectura, setup, roadmap y contribución.

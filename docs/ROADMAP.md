@@ -53,7 +53,7 @@ Convertir a El Alquimista Automatizado en un juego educativo donde cualquier per
 - [ ] Cargador de niveles.
 - [ ] Objetivo del nivel y condición de victoria.
 - [ ] Validación de colisiones y límites del tablero.
-- [ ] Comandos `girar(grados)` y `recoger()`.
+- [x] Comandos `girar(grados)` y `recoger()`.
 - [ ] Inventario y objetos recolectables.
 - [ ] Mensajes de éxito/fracaso.
 - [ ] Selector de niveles.
