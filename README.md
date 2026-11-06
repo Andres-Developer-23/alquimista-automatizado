@@ -13,6 +13,7 @@ Juego educativo de programación y lógica. El jugador escribe Python para contr
 
 - Editor Monaco configurado para Python.
 - Escena 3D con React Three Fiber: tablero de 5x5 y Gólem azul.
+- Movimiento animado entre celdas, sincronizado con el tick de 500 ms.
 - Pyodide ejecutándose dentro de un Web Worker.
 - Funciones Python inyectadas (`mover(x, y)`) que generan un arreglo JSON de acciones.
 - Botón **Ejecutar** que envía el código al Worker y muestra la respuesta en la consola.
