@@ -1,0 +1,46 @@
+name: Tarea técnica
+description: Trabajo de mantenimiento, documentación, CI o refactor.
+title: '[Task]: '
+labels:
+  - 'type:chore'
+  - 'status:ready'
+body:
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto
+      description: ¿Por qué se necesita esta tarea?
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Alcance
+      description: ¿Qué incluye y qué no incluye?
+    validations:
+      required: true
+
+  - type: textarea
+    id: subtasks
+    attributes:
+      label: Subtareas
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: Criterios de terminado
+      description: Condiciones verificables para cerrar la tarea.
+    validations:
+      required: true
+
+  - type: input
+    id: related
+    attributes:
+      label: Issues relacionadas
+      placeholder: '#12, #15'

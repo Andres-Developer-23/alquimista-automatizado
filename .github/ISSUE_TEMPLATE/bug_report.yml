@@ -1,0 +1,73 @@
+name: Reporte de bug
+description: Algo no funciona como se esperaba.
+title: '[Bug]: '
+labels:
+  - 'type:bug'
+  - 'status:needs-triage'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportar un bug. Antes de abrir el issue, revisa que no exista uno similar.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descripción del problema
+      description: ¿Qué ocurre y qué esperabas que ocurriera?
+      placeholder: Al presionar Ejecutar, la consola...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducir
+      description: Lista numerada de pasos.
+      placeholder: |
+        1. Abrir la app
+        2. Escribir mover(1, 2)
+        3. Presionar Ejecutar
+        4. Ver la consola
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Resultado esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Resultado actual
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Entorno
+      description: Navegador, sistema operativo y versión del proyecto.
+      placeholder: Chrome 130, Ubuntu 24.04, main@abc1234
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs o capturas
+      description: Pega errores de consola o adjunta capturas.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmaciones
+      options:
+        - label: Revisé que no existe un issue duplicado.
+          required: true
+        - label: Probé en la última versión de `main`.
+          required: true

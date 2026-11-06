@@ -1,0 +1,66 @@
+name: Solicitud de funcionalidad
+description: Propón una mejora o una nueva funcionalidad.
+title: '[Feature]: '
+labels:
+  - 'type:feature'
+  - 'status:needs-triage'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe el problema antes de proponer la solución. Así se puede evaluar el valor real.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema o necesidad
+      description: ¿Qué problema resuelve esta funcionalidad?
+      placeholder: Como jugador, no puedo saber si mi programa fue correcto porque...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Propuesta
+      description: ¿Cómo imaginas la solución?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: ¿Qué otras opciones evaluaste?
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceptación
+      description: ¿Cómo sabremos que está terminado?
+      placeholder: |
+        - [ ] El Gólem se mueve a la celda indicada.
+        - [ ] La animación dura 500 ms.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Fase del roadmap
+      options:
+        - Fase 1 - Scaffolding
+        - Fase 2 - Motor de acciones
+        - Fase 3 - Niveles y validación
+        - Fase 4 - Pulido y release
+        - No estoy seguro
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Confirmaciones
+      options:
+        - label: Revisé el roadmap y no existe una propuesta similar.
+          required: true
