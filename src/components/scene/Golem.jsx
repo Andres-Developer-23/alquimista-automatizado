@@ -1,15 +1,16 @@
-import { useRef, useState } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useGLTF } from '@react-three/drei'
 import { dampAngle, dampAxis } from './golemMovement'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 
 const RADIANS = Math.PI / 180
 
-export function Golem({ position = [0, 0.5, 0], rotation = 0 }) {
+function GolemModel({ position, rotation, reducedMotion }) {
   const meshRef = useRef(null)
+  const { scene } = useGLTF('/models/golem.glb')
   const [initialPosition] = useState(position)
   const [initialRotation] = useState(rotation)
-  const reducedMotion = useReducedMotion()
 
   useFrame((_, delta) => {
     const mesh = meshRef.current
@@ -18,7 +19,6 @@ export function Golem({ position = [0, 0.5, 0], rotation = 0 }) {
     const [x, y, z] = position
 
     if (reducedMotion) {
-      // Movimiento reducido: saltar directamente al objetivo sin animación.
       mesh.position.set(x, y, z)
       mesh.rotation.y = rotation * RADIANS
       return
@@ -39,9 +39,19 @@ export function Golem({ position = [0, 0.5, 0], rotation = 0 }) {
       rotation={[0, initialRotation * RADIANS, 0]}
       name="golem"
       aria-label="Gólem del jugador"
+      castShadow
     >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#2563eb" roughness={0.35} metalness={0.25} />
+      <primitive object={scene} scale={[0.5, 0.5, 0.5]} />
     </mesh>
+  )
+}
+
+export function Golem({ position = [0, 0.5, 0], rotation = 0 }) {
+  const reducedMotion = useReducedMotion()
+
+  return (
+    <Suspense fallback={null}>
+      <GolemModel position={position} rotation={rotation} reducedMotion={reducedMotion} />
+    </Suspense>
   )
 }

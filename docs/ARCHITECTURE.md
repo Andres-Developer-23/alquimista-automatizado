@@ -115,7 +115,7 @@ Reglas:
 | --- | --- | --- |
 | `src/app` | Componer la pantalla y conectar hooks | Ejecutar Python directamente |
 | `src/components/editor` | Configurar Monaco | Conocer el protocolo del Worker |
-| `src/components/scene` | Renderizar tablero y entidades | Decidir reglas del juego |
+| `src/components/scene` | Renderizar tablero, suelo, paredes y entidades | Decidir reglas del juego |
 | `src/components/ui` | Controles visuales reutilizables | Manejar estado global |
 | `src/engine/actions` | Definir tipos, validar acciones y encolar | Renderizar |
 | `src/engine/tick` | Consumir la cola por ticks | Conocer React o el DOM |
@@ -188,8 +188,11 @@ Componentes:
 
 ## 9. Escena 3D
 
-- `AlchemistScene` monta el `Canvas`, luces, grid y controles de órbita.
-- `Golem` recibe la posición y orientación objetivo desde `useGameEngine`, se dibuja en `[x, 0.5, y]` y se mueve/rota con `useFrame`.
+- `AlchemistScene` monta el `Canvas` con sombras habilitadas, luces, suelo, paredes, grid y controles de órbita.
+- **Suelo:** `PlaneGeometry` de 12x12 en `y = 0`, recibe sombras, color gris pizarra (`#475569`).
+- **Paredes:** cuatro `BoxGeometry` delgadas en los bordes del tablero (±2.6), altura 1.2, color gris oscuro (`#334155`), reciben y proyectan sombras.
+- **Luz direccional:** proyecta sombras con mapa de 1024x1024.
+- `Golem` recibe la posición y orientación objetivo desde `useGameEngine`, se dibuja en `[x, 0.5, y]` y se mueve/rota con `useFrame`. Usa un modelo CC0 bajo poli cargado desde `public/models/golem.glb` mediante `useGLTF`.
 - El grid usa `GridHelper` con tamaño 5 y 5 divisiones; las celdas válidas van de `-2` a `2`.
 - La cámara y los controles están limitados para evitar vistas confusas.
 
@@ -197,6 +200,7 @@ Componentes:
 
 - Vite compila la app con `base: '/alquimista-automatizado/'`.
 - El Worker se empaqueta como asset separado mediante `new Worker(new URL(...))`.
+- El modelo 3D del Gólem se sirve desde `public/models/golem.glb`, accesible bajo la base de Vite.
 - GitHub Actions ejecuta lint, tests y build en cada PR.
 - El workflow de Pages publica `dist/` al hacer push a `main`.
 

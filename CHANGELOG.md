@@ -9,7 +9,16 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 
-- Pendiente de cambios post-v1.0.0.
+- Suelo del taller (`PlaneGeometry`) en `y = 0` para que el Gólem se apoye.
+- Cuatro paredes bajas (`BoxGeometry`) que encierran el tablero 5x5.
+- Sombras básicas en Canvas, suelo, paredes, obstáculos y Gólem.
+- Gólem con modelo CC0 bajo poli (`public/models/golem.glb`, Poly.pizza /m/71gomWolax) cargado con `useGLTF`.
+- Test de renderizado de escena y Gólem.
+
+### Changed
+
+- `Golem.jsx` sustituye la caja azul por el modelo 3D CC0 con interpolación `dampAxis`/`dampAngle` preservada.
+- `AlchemistScene.jsx` habilita sombras y renderiza suelo, paredes y grid.
 
 ## [1.0.0] - 2026-11-06
 

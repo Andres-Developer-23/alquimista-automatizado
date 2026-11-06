@@ -2,6 +2,11 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { Golem } from './Golem'
 
+const FLOOR_SIZE = 12
+const WALL_HEIGHT = 1.2
+const WALL_THICKNESS = 0.25
+const BOARD_EDGE = 2.6
+
 export function AlchemistScene({
   golemPosition = [0, 0.5, 0],
   golemRotation = 0,
@@ -9,10 +14,70 @@ export function AlchemistScene({
   obstacles = [],
 }) {
   return (
-    <Canvas camera={{ position: [6, 6, 6], fov: 45 }}>
+    <Canvas camera={{ position: [6, 6, 6], fov: 45 }} shadows>
       <color attach="background" args={['#0f172a']} />
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[5, 8, 5]} intensity={1.4} />
+      <ambientLight intensity={0.6} />
+      <directionalLight
+        position={[5, 10, 5]}
+        intensity={1.2}
+        castShadow
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
+
+      {/* Suelo del taller */}
+      <mesh
+        name="floor"
+        position={[0, 0, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[FLOOR_SIZE, FLOOR_SIZE]} />
+        <meshStandardMaterial color="#475569" roughness={0.8} metalness={0.1} />
+      </mesh>
+
+      {/* Paredes bajas del taller */}
+      <mesh
+        name="wall-back"
+        position={[0, WALL_HEIGHT / 2, -BOARD_EDGE]}
+        rotation={[0, 0, 0]}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[FLOOR_SIZE, WALL_HEIGHT, WALL_THICKNESS]} />
+        <meshStandardMaterial color="#334155" roughness={0.9} metalness={0.1} />
+      </mesh>
+      <mesh
+        name="wall-front"
+        position={[0, WALL_HEIGHT / 2, BOARD_EDGE]}
+        rotation={[0, Math.PI, 0]}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[FLOOR_SIZE, WALL_HEIGHT, WALL_THICKNESS]} />
+        <meshStandardMaterial color="#334155" roughness={0.9} metalness={0.1} />
+      </mesh>
+      <mesh
+        name="wall-left"
+        position={[-BOARD_EDGE, WALL_HEIGHT / 2, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[FLOOR_SIZE, WALL_HEIGHT, WALL_THICKNESS]} />
+        <meshStandardMaterial color="#334155" roughness={0.9} metalness={0.1} />
+      </mesh>
+      <mesh
+        name="wall-right"
+        position={[BOARD_EDGE, WALL_HEIGHT / 2, 0]}
+        rotation={[0, -Math.PI / 2, 0]}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[FLOOR_SIZE, WALL_HEIGHT, WALL_THICKNESS]} />
+        <meshStandardMaterial color="#334155" roughness={0.9} metalness={0.1} />
+      </mesh>
+
       <gridHelper args={[5, 5, '#64748b', '#334155']} />
 
       {obstacles.map((obstacle) => (
@@ -20,6 +85,8 @@ export function AlchemistScene({
           key={`${obstacle.x},${obstacle.y}`}
           name="obstacle"
           position={[obstacle.x, 0.35, obstacle.y]}
+          castShadow
+          receiveShadow
         >
           <dodecahedronGeometry args={[0.35]} />
           <meshStandardMaterial color="#64748b" roughness={0.9} flatShading />
