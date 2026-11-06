@@ -1,10 +1,15 @@
-importScripts('https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js')
+import { formatPythonError } from '../engine/python/pythonError.js'
+
+const PYODIDE_MODULE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.mjs'
+const PYODIDE_INDEX_URL = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/'
 
 let pyodidePromise = null
 
 async function getPyodide() {
   if (!pyodidePromise) {
-    pyodidePromise = loadPyodide().then((pyodide) => {
+    pyodidePromise = import(/* @vite-ignore */ PYODIDE_MODULE_URL)
+      .then(({ loadPyodide }) => loadPyodide({ indexURL: PYODIDE_INDEX_URL }))
+      .then((pyodide) => {
       pyodide.runPython(`
 import json
 
@@ -20,8 +25,18 @@ def mover(x, y):
   return pyodidePromise
 }
 
+function postError(error, kind = 'auto') {
+  const info = formatPythonError(error, { kind })
+  self.postMessage({ type: 'error', error: info, message: info.message })
+}
+
 async function runCode(code) {
-  const pyodide = await getPyodide()
+  let pyodide
+  try {
+    pyodide = await getPyodide()
+  } catch (error) {
+    throw { kind: 'initialization', cause: error }
+  }
 
   pyodide.runPython('actions.clear()')
   await pyodide.runPythonAsync(code)
@@ -38,18 +53,16 @@ self.onmessage = async (event) => {
     const actions = await runCode(code)
     self.postMessage({ type: 'result', actions })
   } catch (error) {
-    self.postMessage({
-      type: 'error',
-      message: error instanceof Error ? error.message : String(error),
-    })
+    if (error?.kind === 'initialization') {
+      postError(error.cause, 'initialization')
+      return
+    }
+    postError(error)
   }
 }
 
 getPyodide()
   .then(() => self.postMessage({ type: 'ready' }))
   .catch((error) => {
-    self.postMessage({
-      type: 'error',
-      message: error instanceof Error ? error.message : String(error),
-    })
+    postError(error, 'initialization')
   })
