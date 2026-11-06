@@ -1,0 +1,10 @@
+{
+  "id": "nivel-01",
+  "title": "El primer encargo",
+  "description": "El alquimista necesita un ingrediente del caldero. Guía al Gólem con tus comandos.",
+  "objective": "Llega hasta el caldero sin atravesar la roca.",
+  "board": { "minX": -2, "maxX": 2, "minY": -2, "maxY": 2 },
+  "start": { "x": -2, "y": -2, "rotation": 0 },
+  "goal": { "x": 2, "y": 2 },
+  "obstacles": [{ "x": 0, "y": 0 }]
+}

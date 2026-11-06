@@ -9,9 +9,9 @@ import './App.css'
 
 const DEFAULT_CODE = `# El Gólem obedece tus comandos.
 # Cada llamada se convierte en una acción.
-mover(1, 2)
-girar(90)
-recoger()
+mover(-2, 0)
+mover(0, 2)
+mover(2, 2)
 `
 
 const STATUS_LABELS = {
@@ -24,7 +24,17 @@ const STATUS_LABELS = {
 export function App() {
   const [code, setCode] = useState(DEFAULT_CODE)
   const { status, lastResponse, error, run } = usePythonWorker()
-  const { position, rotation, inventory, isPlaying, play, stop } = useGameEngine()
+  const {
+    level,
+    position,
+    rotation,
+    inventory,
+    isWon,
+    isPlaying,
+    play,
+    stop,
+    resetLevel,
+  } = useGameEngine()
   const isBusy = status === 'loading' || status === 'running'
   const showPlaying = isPlaying && status !== 'error'
   const statusClass = showPlaying ? 'running' : status
@@ -54,6 +64,22 @@ export function App() {
         <div className="editor-wrap">
           <CodeEditor value={code} onChange={setCode} />
         </div>
+
+        <div className="level-brief">
+          <div>
+            <p className="level-kicker">Nivel 1 · {level.title}</p>
+            <p className="level-objective">{level.objective}</p>
+          </div>
+          <button className="reset-button" type="button" onClick={resetLevel}>
+            Reiniciar nivel
+          </button>
+        </div>
+
+        {isWon && (
+          <div className="victory-message" role="status" aria-live="polite">
+            <strong>¡Nivel completado!</strong> El Gólem llegó al caldero.
+          </div>
+        )}
 
         <footer className="editor-footer">
           <div className="footer-actions">
@@ -90,6 +116,8 @@ export function App() {
         <AlchemistScene
           golemPosition={[position.x, 0.5, position.y]}
           golemRotation={rotation}
+          goal={level.goal}
+          obstacles={level.obstacles}
         />
       </section>
     </main>

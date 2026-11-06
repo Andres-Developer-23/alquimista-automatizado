@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createActionQueue } from '../engine/actions/actionQueue'
-import { createTickEngine, TICK_INTERVAL_MS } from '../engine/tick/tickEngine'
+import { TICK_INTERVAL_MS, createTickEngine } from '../engine/tick/tickEngine'
+import {
+  clampPointToBoard,
+  createLevel,
+  isGoal,
+  isObstacle,
+} from '../engine/levels/level'
+import firstLevel from '../levels/nivel-01.json'
 
-const INITIAL_POSITION = { x: 0, y: 0 }
-const INITIAL_ROTATION = 0
+const FIRST_LEVEL = createLevel(firstLevel)
 const INITIAL_INVENTORY = 0
-const BOARD_LIMIT = 2
-
-const clampToBoard = (value) =>
-  Math.min(BOARD_LIMIT, Math.max(-BOARD_LIMIT, value))
 
 // Los grados negativos deben envolver, no saltar directamente.
 const normalizeRotation = (degrees) => ((degrees % 360) + 360) % 360
@@ -17,10 +19,18 @@ export function useGameEngine() {
   const queueRef = useRef(null)
   const engineRef = useRef(null)
   const completionTimerRef = useRef(null)
-  const [position, setPosition] = useState(INITIAL_POSITION)
-  const [rotation, setRotation] = useState(INITIAL_ROTATION)
+  const [position, setPosition] = useState({
+    x: FIRST_LEVEL.start.x,
+    y: FIRST_LEVEL.start.y,
+  })
+  const [rotation, setRotation] = useState(FIRST_LEVEL.start.rotation)
   const [inventory, setInventory] = useState(INITIAL_INVENTORY)
+  const [isWon, setIsWon] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+
+  const setEnginePosition = useCallback((value) => {
+    setPosition(value)
+  }, [])
 
   const clearCompletionTimer = useCallback(() => {
     if (completionTimerRef.current === null) return
@@ -30,14 +40,23 @@ export function useGameEngine() {
 
   useEffect(() => {
     const queue = createActionQueue()
+    const finishLevel = () => {
+      clearCompletionTimer()
+      engineRef.current?.stop()
+      queueRef.current?.clear()
+      setIsWon(true)
+      setIsPlaying(false)
+    }
+
     const engine = createTickEngine({
       queue,
       onTick: (action) => {
         if (action.action === 'MOVER') {
-          setPosition({
-            x: clampToBoard(action.x),
-            y: clampToBoard(action.y),
-          })
+          const target = clampPointToBoard(action, FIRST_LEVEL.board)
+          if (isObstacle(target, FIRST_LEVEL.obstacles)) return
+
+          setEnginePosition(target)
+          if (isGoal(target, FIRST_LEVEL.goal)) finishLevel()
           return
         }
 
@@ -69,7 +88,18 @@ export function useGameEngine() {
       queueRef.current = null
       engineRef.current = null
     }
-  }, [clearCompletionTimer])
+  }, [clearCompletionTimer, setEnginePosition])
+
+  const resetLevel = useCallback(() => {
+    clearCompletionTimer()
+    engineRef.current?.stop()
+    queueRef.current?.clear()
+    setEnginePosition({ x: FIRST_LEVEL.start.x, y: FIRST_LEVEL.start.y })
+    setRotation(FIRST_LEVEL.start.rotation)
+    setInventory(INITIAL_INVENTORY)
+    setIsWon(false)
+    setIsPlaying(false)
+  }, [clearCompletionTimer, setEnginePosition])
 
   const play = useCallback(
     (actions) => {
@@ -77,23 +107,15 @@ export function useGameEngine() {
       const engine = engineRef.current
       if (!queue || !engine) return
 
-      clearCompletionTimer()
-      engine.stop()
-      queue.clear()
-      setPosition(INITIAL_POSITION)
-      setRotation(INITIAL_ROTATION)
-      setInventory(INITIAL_INVENTORY)
+      resetLevel()
 
-      if (!Array.isArray(actions) || actions.length === 0) {
-        setIsPlaying(false)
-        return
-      }
+      if (!Array.isArray(actions) || actions.length === 0) return
 
       queue.enqueueAll(actions)
       setIsPlaying(true)
       engine.start()
     },
-    [clearCompletionTimer],
+    [resetLevel],
   )
 
   const stop = useCallback(() => {
@@ -103,5 +125,15 @@ export function useGameEngine() {
     setIsPlaying(false)
   }, [clearCompletionTimer])
 
-  return { position, rotation, inventory, isPlaying, play, stop }
+  return {
+    level: FIRST_LEVEL,
+    position,
+    rotation,
+    inventory,
+    isWon,
+    isPlaying,
+    play,
+    stop,
+    resetLevel,
+  }
 }
