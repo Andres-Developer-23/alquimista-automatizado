@@ -6,6 +6,21 @@ import {
 } from '../../src/engine/actions/actionTypes'
 
 describe('action validation', () => {
+  it('accepts valid girar and recoger actions', () => {
+    expect(isValidAction({ action: ACTION.GIRAR, grados: 90 })).toBe(true)
+    expect(isValidAction({ action: ACTION.GIRAR, grados: -45.5 })).toBe(true)
+    expect(isValidAction({ action: ACTION.RECOGER })).toBe(true)
+  })
+
+  it('rejects malformed girar and recoger actions', () => {
+    expect(isValidAction({ action: ACTION.GIRAR })).toBe(false)
+    expect(isValidAction({ action: ACTION.GIRAR, grados: '90' })).toBe(false)
+    expect(isValidAction({ action: ACTION.GIRAR, grados: Number.NaN })).toBe(false)
+    expect(isValidAction({ action: ACTION.GIRAR, grados: Number.POSITIVE_INFINITY })).toBe(false)
+    expect(isValidAction({ action: ACTION.RECOGER, x: 1 })).toBe(true)
+    expect(isValidAction({ action: 'SALTAR' })).toBe(false)
+  })
+
   it('accepts a valid mover action', () => {
     expect(isValidAction({ action: ACTION.MOVER, x: 1, y: 2 })).toBe(true)
   })
@@ -20,11 +35,17 @@ describe('action validation', () => {
   it('filters invalid actions from the worker response', () => {
     const actions = normalizeActions([
       { action: ACTION.MOVER, x: 1, y: 2 },
-      { action: ACTION.MOVER, x: null, y: 2 },
+      { action: ACTION.GIRAR, grados: 90 },
+      { action: ACTION.RECOGER },
+      { action: ACTION.GIRAR, grados: Number.NaN },
       { action: 'DESCONOCIDA' },
     ])
 
-    expect(actions).toEqual([{ action: ACTION.MOVER, x: 1, y: 2 }])
+    expect(actions).toEqual([
+      { action: ACTION.MOVER, x: 1, y: 2 },
+      { action: ACTION.GIRAR, grados: 90 },
+      { action: ACTION.RECOGER },
+    ])
   })
 
   it('returns an empty list for a non-array response', () => {

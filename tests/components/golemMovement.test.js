@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dampAxis } from '../../src/components/scene/golemMovement'
+import { dampAngle, dampAxis } from '../../src/components/scene/golemMovement'
 
 describe('dampAxis', () => {
   it('reaches the target in about one tick without overshooting', () => {
@@ -14,5 +14,21 @@ describe('dampAxis', () => {
 
     expect(next).toBeGreaterThan(-2)
     expect(next).toBeLessThan(2)
+  })
+})
+
+describe('dampAngle', () => {
+  it('rotates through the shortest path', () => {
+    const next = dampAngle(350, 10, 0.5)
+
+    expect(next).toBeGreaterThan(359)
+    expect(next).toBeLessThan(370)
+  })
+
+  it('can turn counter-clockwise', () => {
+    const next = dampAngle(10, 350, 0.5)
+
+    expect(next).toBeLessThan(1)
+    expect(next).toBeGreaterThan(-10)
   })
 })

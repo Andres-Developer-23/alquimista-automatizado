@@ -12,11 +12,28 @@ async function getPyodide() {
       .then((pyodide) => {
       pyodide.runPython(`
 import json
+import math
 
 actions = []
 
 def mover(x, y):
     actions.append({"action": "MOVER", "x": int(x), "y": int(y)})
+
+def _degrees(grados):
+    if isinstance(grados, bool) or not isinstance(grados, (int, float)):
+        raise TypeError("grados debe ser un número")
+
+    value = float(grados)
+    if not math.isfinite(value):
+        raise ValueError("grados debe ser un número finito")
+
+    return int(value) if value.is_integer() else value
+
+def girar(grados):
+    actions.append({"action": "GIRAR", "grados": _degrees(grados)})
+
+def recoger():
+    actions.append({"action": "RECOGER"})
 `)
       return pyodide
     })

@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useGameEngine } from '../../src/hooks/useGameEngine'
 
 const mover = (x, y) => ({ action: 'MOVER', x, y })
+const girar = (grados) => ({ action: 'GIRAR', grados })
+const recoger = () => ({ action: 'RECOGER' })
 
 describe('useGameEngine', () => {
   beforeEach(() => {
@@ -30,6 +32,40 @@ describe('useGameEngine', () => {
 
     act(() => vi.advanceTimersByTime(500))
     expect(result.current.isPlaying).toBe(false)
+  })
+
+  it('rotates and collects one action per tick', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    act(() => result.current.play([girar(90), recoger(), girar(-10)]))
+
+    expect(result.current.rotation).toBe(0)
+    expect(result.current.inventory).toBe(0)
+
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.rotation).toBe(90)
+    expect(result.current.inventory).toBe(0)
+
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.inventory).toBe(1)
+
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.rotation).toBe(80)
+  })
+
+  it('resets the run state when new actions are played', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    act(() => result.current.play([mover(1, 2), girar(180), recoger()]))
+    act(() => vi.advanceTimersByTime(1500))
+    expect(result.current.position).toEqual({ x: 1, y: 2 })
+    expect(result.current.rotation).toBe(180)
+    expect(result.current.inventory).toBe(1)
+
+    act(() => result.current.play([girar(45)]))
+    expect(result.current.position).toEqual({ x: 0, y: 0 })
+    expect(result.current.rotation).toBe(0)
+    expect(result.current.inventory).toBe(0)
   })
 
   it('clamps actions to the board limits', () => {
