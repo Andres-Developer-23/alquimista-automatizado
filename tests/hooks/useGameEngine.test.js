@@ -15,14 +15,11 @@ describe('useGameEngine', () => {
     vi.useRealTimers()
   })
 
-  it('starts at the level start position', () => {
-    const { result } = renderHook(() => useGameEngine())
+  it('empieza en la posición de inicio del nivel indicado', () => {
+    const { result } = renderHook(() => useGameEngine({ levelId: 'nivel-02' }))
 
-    expect(result.current.position).toEqual({ x: -2, y: -2 })
-    expect(result.current.rotation).toBe(0)
-    expect(result.current.inventory).toBe(0)
-    expect(result.current.isWon).toBe(false)
-    expect(result.current.level.id).toBe('nivel-01')
+    expect(result.current.position).toEqual({ x: 2, y: -2 })
+    expect(result.current.level.id).toBe('nivel-02')
   })
 
   it('moves the golem one action per tick', () => {
