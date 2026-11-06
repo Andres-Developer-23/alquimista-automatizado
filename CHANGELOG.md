@@ -16,7 +16,10 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Función Python `mover(x, y)` que genera acciones JSON.
 - Botón Ejecutar y registro de la respuesta en consola.
 - Validación y normalización de acciones en el cliente.
-- Tests unitarios de acciones con Vitest.
+- Cola FIFO de acciones con cancelación de ejecuciones anteriores.
+- Motor de ticks de 500 ms con scheduler inyectable.
+- Estado de posición del Gólem sincronizado con la escena.
+- Tests unitarios de acciones, cola, ticks y estado del juego.
 - Configuración de GitHub Pages.
 - CI con lint, tests y build.
 - Documentación de arquitectura, setup, roadmap y contribución.

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CodeEditor } from '../components/editor/CodeEditor'
 import { AlchemistScene } from '../components/scene/AlchemistScene'
 import { RunButton } from '../components/ui/RunButton'
+import { useGameEngine } from '../hooks/useGameEngine'
 import { usePythonWorker } from '../hooks/usePythonWorker'
 import './App.css'
 
@@ -20,7 +21,19 @@ const STATUS_LABELS = {
 export function App() {
   const [code, setCode] = useState(DEFAULT_CODE)
   const { status, lastResponse, error, run } = usePythonWorker()
+  const { position, isPlaying, play, stop } = useGameEngine()
   const isBusy = status === 'loading' || status === 'running'
+  const showPlaying = isPlaying && status !== 'error'
+  const statusClass = showPlaying ? 'running' : status
+  const statusLabel = showPlaying ? 'Moviendo…' : STATUS_LABELS[status]
+
+  useEffect(() => {
+    if (lastResponse) play(lastResponse)
+  }, [lastResponse, play])
+
+  useEffect(() => {
+    if (error) stop()
+  }, [error, stop])
 
   return (
     <main className="app-shell">
@@ -30,8 +43,8 @@ export function App() {
             <p className="eyebrow">El Alquimista Automatizado</p>
             <h1>Taller del Gólem</h1>
           </div>
-          <span className={`status status--${status}`} role="status">
-            {STATUS_LABELS[status]}
+          <span className={`status status--${statusClass}`} role="status">
+            {statusLabel}
           </span>
         </header>
 
@@ -41,7 +54,13 @@ export function App() {
 
         <footer className="editor-footer">
           <div className="footer-actions">
-            <RunButton onClick={() => run(code)} disabled={isBusy} />
+            <RunButton
+              onClick={() => {
+                stop()
+                run(code)
+              }}
+              disabled={isBusy}
+            />
             {lastResponse && (
               <span className="action-count">
                 {lastResponse.length}{' '}
@@ -50,7 +69,8 @@ export function App() {
             )}
           </div>
           <p className="hint">
-            La respuesta JSON del Worker se imprime en la consola del navegador.
+            El Gólem ejecuta una acción cada 500 ms. La respuesta JSON también se
+            imprime en la consola.
           </p>
           {error && (
             <p className="error-message" role="alert">
@@ -61,7 +81,7 @@ export function App() {
       </section>
 
       <section className="scene-panel" aria-label="Escena 3D del Gólem">
-        <AlchemistScene />
+        <AlchemistScene golemPosition={[position.x, 0.5, position.y]} />
       </section>
     </main>
   )

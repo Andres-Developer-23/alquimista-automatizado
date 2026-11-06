@@ -33,14 +33,14 @@ Convertir a El Alquimista Automatizado en un juego educativo donde cualquier per
 
 **Objetivo:** que el Gólem se mueva de verdad, una acción por tick.
 
-- [ ] Definir el estado del juego (`position`, `rotation`, `inventory`).
-- [ ] Implementar cola de acciones.
-- [ ] Implementar `tickEngine` con intervalo de 500 ms.
-- [ ] Cancelar ejecuciones anteriores al volver a presionar Ejecutar.
+- [x] Definir el estado del juego (`position`).
+- [x] Implementar cola de acciones.
+- [x] Implementar `tickEngine` con intervalo de 500 ms.
+- [x] Cancelar ejecuciones anteriores al volver a presionar Ejecutar.
 - [ ] Animar el Gólem entre celdas.
-- [ ] Sincronizar la escena con el estado del juego.
+- [x] Sincronizar la escena con el estado del juego.
 - [ ] Mostrar errores de Python en la UI.
-- [ ] Tests del motor con scheduler inyectado.
+- [x] Tests del motor con scheduler inyectado.
 - [ ] Tests de integración del protocolo Worker.
 
 **Criterio de salida:** `mover(1, 2)` desplaza visualmente al Gólem a la celda `(1, 2)` en un tick.
