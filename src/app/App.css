@@ -105,6 +105,11 @@
   transform: translateY(1px);
 }
 
+.run-button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 .run-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
@@ -262,6 +267,11 @@
 
 .level-pill:hover {
   border-color: var(--color-accent);
+}
+
+.level-pill:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .level-pill--active {
