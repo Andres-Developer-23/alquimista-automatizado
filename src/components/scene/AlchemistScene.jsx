@@ -3,7 +3,7 @@ import { OrbitControls } from '@react-three/drei'
 import { Golem } from './Golem'
 
 const FLOOR_SIZE = 12
-const WALL_HEIGHT = 1.2
+const WALL_HEIGHT = 1.6
 const WALL_THICKNESS = 0.25
 const BOARD_EDGE = 2.6
 
@@ -16,16 +16,17 @@ export function AlchemistScene({
   return (
     <Canvas camera={{ position: [6, 6, 6], fov: 45 }} shadows>
       <color attach="background" args={['#0f172a']} />
-      <ambientLight intensity={0.6} />
+      <ambientLight intensity={0.5} />
       <directionalLight
         position={[5, 10, 5]}
-        intensity={1.2}
+        intensity={1.0}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
+      <pointLight position={[0, 8, 0]} intensity={0.8} distance={20} decay={1.5} />
 
-      {/* Suelo del taller */}
+      {/* Suelo del taller con patrón de baldosas */}
       <mesh
         name="floor"
         position={[0, 0, 0]}
@@ -33,8 +34,15 @@ export function AlchemistScene({
         receiveShadow
       >
         <planeGeometry args={[FLOOR_SIZE, FLOOR_SIZE]} />
-        <meshStandardMaterial color="#475569" roughness={0.8} metalness={0.1} />
+        <meshStandardMaterial color="#5b6a7a" roughness={0.85} metalness={0.05} />
       </mesh>
+
+      {/* Patrón de baldosas sobre el suelo */}
+      <gridHelper
+        args={[FLOOR_SIZE, FLOOR_SIZE, '#44505a', '#333c44']}
+        position={[0, 0.01, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+      />
 
       {/* Paredes bajas del taller */}
       <mesh
