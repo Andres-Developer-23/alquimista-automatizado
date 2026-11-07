@@ -32,7 +32,7 @@ flowchart LR
     G --> R[Escena React Three Fiber]
 ```
 
-La cola y los ticks alimentan el estado del juego; `MOVER` desplaza al Gólem, `GIRAR` rota su Mesh y `RECOGER` incrementa el inventario lógico de la ejecución.
+La cola y los ticks alimentan el estado del juego; `MOVER` desplaza al Gólem (sin pisar obstáculos ni estaciones fijas), `GIRAR` rota su Mesh, `RECOGER` incrementa el inventario, y `PLANTAR`/`COSECHAR` gestionan las macetas mágicas. La victoria se alcanza al quedar en la casilla de al lado de la estación objetivo.
 
 ## 4. Flujo de una ejecución
 
@@ -99,15 +99,29 @@ type CollectAction = {
   action: 'RECOGER'
 }
 
-type GameAction = MoveAction | TurnAction | CollectAction
+type PlantAction = {
+  action: 'PLANTAR'
+}
+
+type HarvestAction = {
+  action: 'COSECHAR'
+}
+
+type GameAction = MoveAction | TurnAction | CollectAction | PlantAction | HarvestAction
 ```
 
 Reglas:
 
 - `x` e `y` deben ser enteros.
-- `GIRAR` acepta un número finito en `grados`; `RECOGER` no lleva campos adicionales.
+- `GIRAR` acepta un número finito en `grados`; `RECOGER`, `PLANTAR` y `COSECHAR` no llevan campos adicionales.
 - Las acciones desconocidas o inválidas se descartan en `normalizeActions`.
 - El Worker no conoce el estado del juego; solo traduce Python a datos.
+
+### Macetas y estaciones
+
+- **Macetas** (`level.planters`): celdas transitables donde `plantar()` deja la maceta en `planted` y `cosechar()` solo funciona cuando está `grown`. El crecimiento avanza un paso al inicio de cada tick (`planted` → `grown`).
+- **Estaciones** (`level.stations`): celdas **no transitables** de tipo `cauldron` (meta) u `hopper` (cofre). El Gólem no puede pisarlas; se sitúa en la casilla de al lado para interactuar.
+- **Victoria**: `isAdjacent(position, goal)` es verdadero, es decir, ortogonalmente adyacente a la meta.
 
 ## 5. Responsabilidades por carpeta
 

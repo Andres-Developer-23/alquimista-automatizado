@@ -79,6 +79,22 @@ Convertir a El Alquimista Automatizado en un juego educativo donde cualquier per
 
 **Criterio de salida:** un usuario nuevo completa el primer nivel sin ayuda externa.
 
+## Fase 5 — Laboratorio y agricultura
+
+**Objetivo:** dar contenido al taller con macetas, estaciones y obstáculos.
+
+- [x] Suelo de baldosas de piedra como espacio transitable.
+- [x] Macetas mágicas (tierra) renderizadas por celda.
+- [x] Comandos `plantar()` y `cosechar()` válidos solo en macetas.
+- [x] Estado de crecimiento de macetas (`planted` → `grown`) por tick.
+- [x] Estaciones fijas no transitables: caldero (meta) y cofre/tolva.
+- [x] Victoria al quedar en la casilla de al lado de la estación objetivo.
+- [x] Obstáculos que bloquean el camino y obligan a esquivar.
+- [ ] Obstáculos avanzados (muros interiores, estanterías, charcos de ácido).
+- [ ] Niveles que exijan plantar y cosechar para avanzar.
+
+**Criterio de salida:** el jugador puede plantar, cosechar y entregar la poción siguiendo las reglas del laboratorio.
+
 ## Backlog no priorizado
 
 - Editor de niveles.

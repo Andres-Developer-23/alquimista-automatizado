@@ -12,12 +12,12 @@ Juego educativo de programación y lógica. El jugador escribe Python para contr
 ## Qué incluye el MVP
 
 - Editor Monaco configurado para Python.
-- Escena 3D con React Three Fiber: tablero de 5x5, suelo, paredes bajas y Gólem con modelo CC0 bajo poli.
+- Escena 3D con React Three Fiber: tablero de 5x5 con baldosas de piedra, macetas mágicas, caldero, cofre y Gólem con modelo CC0 bajo poli.
 - Movimiento animado entre celdas y rotación del Gólem, sincronizados con el tick de 500 ms.
 - Errores de Python clasificados y mostrados en un panel legible.
 - Pyodide ejecutándose dentro de un Web Worker de módulo.
-- Funciones Python inyectadas (`mover(x, y)`, `girar(grados)` y `recoger()`) que generan un arreglo JSON de acciones.
-- Inventario lógico de `recoger()` visible en la UI.
+- Funciones Python inyectadas (`mover(x, y)`, `girar(grados)`, `recoger()`, `plantar()` y `cosechar()`) que generan un arreglo JSON de acciones.
+- Inventario lógico de `recoger()` y `cosechar()` visible en la UI.
 - Botón **Ejecutar** que envía el código al Worker y muestra la respuesta en la consola.
 - Base configurada para publicar en GitHub Pages.
 
@@ -100,7 +100,11 @@ Comandos inyectados en Python:
 mover(1, 2)
 girar(90)
 recoger()
+plantar()
+cosechar()
 ```
+
+`plantar()` y `cosechar()` solo funcionan si el Gólem está en una maceta. Las estaciones fijas (caldero y cofre) no se pueden pisar: el Gólem se sitúa en la casilla de al lado para interactuar.
 
 ## Estructura del proyecto
 

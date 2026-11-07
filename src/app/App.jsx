@@ -10,9 +10,10 @@ import './App.css'
 
 const DEFAULT_CODE = `# El Gólem obedece tus comandos.
 # Cada llamada se convierte en una acción.
+# El caldero no se pisa: hay que quedar en la casilla de al lado.
 mover(-2, 0)
 mover(0, 2)
-mover(2, 2)
+mover(1, 2)
 `
 
 const STATUS_LABELS = {
@@ -40,6 +41,7 @@ export function App() {
     inventory,
     isWon,
     isPlaying,
+    plantersState,
     play,
     stop,
     resetLevel,
@@ -145,9 +147,12 @@ export function App() {
             <code>mover(1, 2)</code>
             <code>girar(90)</code>
             <code>recoger()</code>
+            <code>plantar()</code>
+            <code>cosechar()</code>
           </p>
           <p className="hint">
-            mover cambia de celda, girar rota al Gólem y recoger incrementa el inventario. Una acción se ejecuta cada 500 ms.
+            mover cambia de celda, girar rota al Gólem, recoger incrementa el inventario. plantar y cosechar
+            funcionan solo en una maceta. Una acción se ejecuta cada 500 ms.
           </p>
           <PythonErrorPanel error={error} />
         </footer>
@@ -159,6 +164,9 @@ export function App() {
           golemRotation={rotation}
           goal={gameLevel.goal}
           obstacles={gameLevel.obstacles}
+          planters={gameLevel.planters}
+          stations={gameLevel.stations}
+          plantersState={plantersState}
         />
       </section>
     </main>

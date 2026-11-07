@@ -6,5 +6,10 @@
   "board": { "minX": -2, "maxX": 2, "minY": -2, "maxY": 2 },
   "start": { "x": 2, "y": -2, "rotation": 0 },
   "goal": { "x": -2, "y": 2 },
-  "obstacles": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }]
+  "obstacles": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }],
+  "planters": [{ "x": 2, "y": 2 }],
+  "stations": [
+    { "x": -2, "y": 2, "type": "cauldron" },
+    { "x": -2, "y": -2, "type": "hopper" }
+  ]
 }
