@@ -23,6 +23,7 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
 - `AlchemistScene.jsx` sustituye los props de tienda por el escenario de laboratorio (baldosas, macetas, caldero, cofre).
 - `Golem.jsx` carga `alchemist.glb` con `useGLTF` + `useAnimations` (Idle ↔ Walk con crossfade); desaparece el bobbing de aleteo y el modelo se mantiene con los pies en `y=0`.
+- Desplazamiento del personaje: segmento lineal por tick (velocidad constante, sin acelerón por celda), orientación hacia el sentido de la marcha mientras camina y clip `Walk` solo cuando avanza de verdad.
 - `useGameEngine` gestiona macetas, crecimiento y bloqueo de estaciones; la victoria es adyacente a la meta.
 - `level.js` valida y expone `planters` y `stations` más los helpers `isPlanter`, `isStation` e `isAdjacent`.
 - `actionTypes.js` reconoce `PLANTAR` y `COSECHAR`.

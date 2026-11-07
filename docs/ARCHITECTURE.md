@@ -198,14 +198,14 @@ Componentes:
 - Al vaciarse la cola, el motor se detiene y llama `onComplete()`.
 - El scheduler se inyecta en los tests; por defecto usa `setInterval` y `clearInterval`.
 
-`Golem` interpola visualmente hacia la posición objetivo con `useFrame` y amortiguación exponencial (`lambda = 12`), de modo que recorre una celda en aproximadamente 500 ms sin sobrepasarla; los giros usan el camino angular más corto. La interpolación es monótona: si la posición lógica está dentro del tablero, el Gólem tampoco sale de él. No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
+`Golem` interpola visualmente hacia la posición objetivo con `useFrame` mediante un **segmento lineal** de duración `TICK_INTERVAL_MS + 50` (velocidad constante, sincronizado con el tick y sin sobrepasar la celda); los giros usan `dampAngle`, que recorre el camino angular más corto. La interpolación es monótona: si la posición lógica está dentro del tablero, el Gólem tampoco sale de él. No se debe usar `time.sleep` ni bucles de espera dentro del código Python.
 
 ## 9. Escena 3D
 
 - `AlchemistScene` monta el `Canvas` con sombras habilitadas, luces, suelo de baldosas, estaciones, obstáculos y controles de órbita.
 - **Suelo:** base de piedra de 12x12 en `y = 0` más 25 baldosas 5x5 con variación de tono; reciben sombras.
 - **Luz direccional:** proyecta sombras con mapa de 1024x1024.
-- `Golem` (el alquimista) recibe la posición y orientación objetivo desde `useGameEngine` más `isPlaying` como `isMoving`. Interpola el desplazamiento y la rotación con `useFrame` (`dampAxis`/`dampAngle`) y alterna los clips `Idle` y `Walk` con crossfade mediante `useAnimations`. Usa el modelo `public/models/alchemist.glb` (Quaternius, CC-BY) cargado con `useGLTF`, a escala 0.4, con los pies en `y = 0`.
+- `Golem` (el alquimista) recibe la posición y orientación objetivo desde `useGameEngine` más `isPlaying` como `isMoving`. Cada nuevo objetivo inicia un segmento lineal (`segmentPoint`, duración `TICK_INTERVAL_MS + 50`) que se recalcula desde la posición actual; mientras avanza orienta el yaw hacia el sentido de la marcha (`atan2`) y al parar vuelve a la orientación lógica con `dampAngle`. El clip `Walk` solo suena cuando hay segmento activo (no pisa en el sitio) y alterna con `Idle` mediante crossfade en `useAnimations`. Usa el modelo `public/models/alchemist.glb` (Quaternius, CC-BY) cargado con `useGLTF`, a escala 0.4, con los pies en `y = 0`.
 - Las celdas válidas van de `-2` a `2` (tablero 5x5).
 - La cámara y los controles están limitados para evitar vistas confusas.
 
