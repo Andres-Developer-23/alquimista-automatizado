@@ -1,19 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { dampAngle, dampAxis } from '../../src/components/scene/golemMovement'
+import { dampAngle, segmentPoint } from '../../src/components/scene/golemMovement'
 
-describe('dampAxis', () => {
-  it('reaches the target in about one tick without overshooting', () => {
-    const next = dampAxis(0, 2, 0.5)
-
-    expect(next).toBeGreaterThan(1.99)
-    expect(next).toBeLessThanOrEqual(2)
+describe('segmentPoint', () => {
+  it('advances linearly from start to end', () => {
+    expect(segmentPoint(0, 0, 2, 4, 0)).toEqual([0, 0])
+    expect(segmentPoint(0, 0, 2, 4, 0.5)).toEqual([1, 2])
+    expect(segmentPoint(0, 0, 2, 4, 1)).toEqual([2, 4])
   })
 
-  it('moves in the direction of the target', () => {
-    const next = dampAxis(2, -2, 0.1)
-
-    expect(next).toBeGreaterThan(-2)
-    expect(next).toBeLessThan(2)
+  it('clamps the progress outside 0..1', () => {
+    expect(segmentPoint(0, 0, 2, 0, -1)).toEqual([0, 0])
+    expect(segmentPoint(0, 0, 2, 0, 2)).toEqual([2, 0])
   })
 })
 
