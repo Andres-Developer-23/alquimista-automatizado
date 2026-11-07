@@ -160,8 +160,9 @@ export function App() {
 
       <section className="scene-panel" aria-label="Escena 3D del Gólem">
         <AlchemistScene
-          golemPosition={[position.x, 0.5, position.y]}
+          golemPosition={[position.x, 0, position.y]}
           golemRotation={rotation}
+          isMoving={isPlaying}
           goal={gameLevel.goal}
           obstacles={gameLevel.obstacles}
           planters={gameLevel.planters}

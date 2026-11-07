@@ -16,11 +16,13 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 - Estaciones fijas no transitables: caldero humeante (meta) y cofre/tolva para enviar la poción.
 - Victoria al situarse en la casilla de al lado de la estación objetivo (ya no se pisa el caldero).
 - Obstáculos del laboratorio que bloquean el camino y obligan a programar esquivas.
+- Personaje alquimista 3D con animaciones de caminar y reposo (`alchemist.glb`, CC-BY).
 - Tests de macetas, estaciones y victoria adyacente.
 
 ### Changed
 
 - `AlchemistScene.jsx` sustituye los props de tienda por el escenario de laboratorio (baldosas, macetas, caldero, cofre).
+- `Golem.jsx` carga `alchemist.glb` con `useGLTF` + `useAnimations` (Idle ↔ Walk con crossfade); desaparece el bobbing de aleteo y el modelo se mantiene con los pies en `y=0`.
 - `useGameEngine` gestiona macetas, crecimiento y bloqueo de estaciones; la victoria es adyacente a la meta.
 - `level.js` valida y expone `planters` y `stations` más los helpers `isPlanter`, `isStation` e `isAdjacent`.
 - `actionTypes.js` reconoce `PLANTAR` y `COSECHAR`.

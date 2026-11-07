@@ -70,6 +70,16 @@ Los assets CC0 pueden usarse sin atribución, pero se listan como buena práctic
 
 Si alguno de estos assets se integra en el proyecto, conserva el nombre del autor, el enlace al asset y el enlace a la licencia.
 
+### Quaternius (integrado)
+
+- **Animated Wizard** — <https://poly.pizza/m/kttbFvCl2C>
+  - Autor: Quaternius
+  - Licencia: Creative Commons Attribution 3.0 (CC-BY 3.0)
+  - Formato: FBX/GLTF · GLB integrado como `public/models/alchemist.glb`
+  - Fecha: 2022-06-01
+  - Clips usados: `Idle` y `Walk`
+  - Uso en el juego: personaje del jugador (alquimista) que camina por el tablero.
+
 ### Viktor_
 
 - **Low-poly cauldron** — <https://sketchfab.com/3d-models/low-poly-cauldron-9f79eddc955c418db77013370dcec099>

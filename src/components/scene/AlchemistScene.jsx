@@ -24,8 +24,9 @@ function boardTiles() {
 const TILES = boardTiles()
 
 export function AlchemistScene({
-  golemPosition = [0, 0.5, 0],
+  golemPosition = [0, 0, 0],
   golemRotation = 0,
+  isMoving = false,
   goal = null,
   obstacles = [],
   planters = [],
@@ -161,7 +162,7 @@ export function AlchemistScene({
         </mesh>
       ))}
 
-      <Golem position={golemPosition} rotation={golemRotation} />
+      <Golem position={golemPosition} rotation={golemRotation} isMoving={isMoving} />
       <OrbitControls
         enablePan={false}
         minDistance={4}

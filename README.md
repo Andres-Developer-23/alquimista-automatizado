@@ -124,7 +124,7 @@ src/
 ├── styles/              # estilos globales y tokens
 └── workers/             # Pyodide + intérprete Python
 public/
-└── models/              # modelos 3D CC0 (golem.glb)
+└── models/              # modelo del alquimista (alchemist.glb, CC-BY)
 ```
 
 Más detalle en [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
