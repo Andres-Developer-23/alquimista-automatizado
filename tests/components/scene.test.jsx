@@ -12,7 +12,8 @@ vi.mock('@react-three/fiber', () => {
 
 vi.mock('@react-three/drei', () => ({
   OrbitControls: () => null,
-  useGLTF: () => ({ scene: { name: 'golem-scene' } }),
+  useGLTF: () => ({ scene: { name: 'golem-scene', traverse: () => {} }, animations: [] }),
+  useAnimations: () => ({ actions: {} }),
 }))
 
 import { render, screen } from '@testing-library/react'
@@ -23,7 +24,7 @@ describe('AlchemistScene - terreno y Gólem', () => {
   it('renderiza la escena con suelo, paredes, gólem y controles', () => {
     render(
       <AlchemistScene
-        golemPosition={[0, 0.5, 0]}
+        golemPosition={[0, 0, 0]}
         golemRotation={0}
         goal={{ x: 2, y: 2 }}
         obstacles={[{ x: 0, y: 0 }]}
@@ -34,7 +35,7 @@ describe('AlchemistScene - terreno y Gólem', () => {
   })
 
   it('renderiza el Gólem con posición y rotación', () => {
-    render(<Golem position={[1, 0.5, -1]} rotation={90} />)
+    render(<Golem position={[1, 0, -1]} rotation={90} isMoving />)
 
     expect(screen.getByTestId('r3f-canvas')).toBeInTheDocument()
   })

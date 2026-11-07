@@ -202,19 +202,18 @@ Componentes:
 
 ## 9. Escena 3D
 
-- `AlchemistScene` monta el `Canvas` con sombras habilitadas, luces, suelo, paredes, grid y controles de órbita.
-- **Suelo:** `PlaneGeometry` de 12x12 en `y = 0`, recibe sombras, color gris pizarra (`#475569`).
-- **Paredes:** cuatro `BoxGeometry` delgadas en los bordes del tablero (±2.6), altura 1.2, color gris oscuro (`#334155`), reciben y proyectan sombras.
+- `AlchemistScene` monta el `Canvas` con sombras habilitadas, luces, suelo de baldosas, estaciones, obstáculos y controles de órbita.
+- **Suelo:** base de piedra de 12x12 en `y = 0` más 25 baldosas 5x5 con variación de tono; reciben sombras.
 - **Luz direccional:** proyecta sombras con mapa de 1024x1024.
-- `Golem` recibe la posición y orientación objetivo desde `useGameEngine`, se dibuja en `[x, 0.5, y]` y se mueve/rota con `useFrame`. Usa un modelo CC0 bajo poli cargado desde `public/models/golem.glb` mediante `useGLTF`.
-- El grid usa `GridHelper` con tamaño 5 y 5 divisiones; las celdas válidas van de `-2` a `2`.
+- `Golem` (el alquimista) recibe la posición y orientación objetivo desde `useGameEngine` más `isPlaying` como `isMoving`. Interpola el desplazamiento y la rotación con `useFrame` (`dampAxis`/`dampAngle`) y alterna los clips `Idle` y `Walk` con crossfade mediante `useAnimations`. Usa el modelo `public/models/alchemist.glb` (Quaternius, CC-BY) cargado con `useGLTF`, a escala 0.4, con los pies en `y = 0`.
+- Las celdas válidas van de `-2` a `2` (tablero 5x5).
 - La cámara y los controles están limitados para evitar vistas confusas.
 
 ## 10. Build y despliegue
 
 - Vite compila la app con `base: '/alquimista-automatizado/'`.
 - El Worker se empaqueta como asset separado mediante `new Worker(new URL(...))`.
-- El modelo 3D del Gólem se sirve desde `public/models/golem.glb`, accesible bajo la base de Vite.
+- El modelo 3D del alquimista se sirve desde `public/models/alchemist.glb`, accesible bajo la base de Vite.
 - GitHub Actions ejecuta lint, tests y build en cada PR.
 - El workflow de Pages publica `dist/` al hacer push a `main`.
 
