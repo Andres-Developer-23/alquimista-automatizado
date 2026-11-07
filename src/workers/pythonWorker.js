@@ -34,6 +34,12 @@ def girar(grados):
 
 def recoger():
     actions.append({"action": "RECOGER"})
+
+def plantar():
+    actions.append({"action": "PLANTAR"})
+
+def cosechar():
+    actions.append({"action": "COSECHAR"})
 `)
       return pyodide
     })

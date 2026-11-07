@@ -5,6 +5,8 @@ import { useGameEngine } from '../../src/hooks/useGameEngine'
 const mover = (x, y) => ({ action: 'MOVER', x, y })
 const girar = (grados) => ({ action: 'GIRAR', grados })
 const recoger = () => ({ action: 'RECOGER' })
+const plantar = () => ({ action: 'PLANTAR' })
+const cosechar = () => ({ action: 'COSECHAR' })
 
 describe('useGameEngine', () => {
   beforeEach(() => {
@@ -25,16 +27,16 @@ describe('useGameEngine', () => {
   it('moves the golem one action per tick', () => {
     const { result } = renderHook(() => useGameEngine())
 
-    act(() => result.current.play([mover(1, 2), mover(-1, 0)]))
+    act(() => result.current.play([mover(-1, 0), mover(1, -1)]))
 
     expect(result.current.isPlaying).toBe(true)
     expect(result.current.position).toEqual({ x: -2, y: -2 })
 
     act(() => vi.advanceTimersByTime(500))
-    expect(result.current.position).toEqual({ x: 1, y: 2 })
+    expect(result.current.position).toEqual({ x: -1, y: 0 })
 
     act(() => vi.advanceTimersByTime(500))
-    expect(result.current.position).toEqual({ x: -1, y: 0 })
+    expect(result.current.position).toEqual({ x: 1, y: -1 })
     expect(result.current.isPlaying).toBe(true)
 
     act(() => vi.advanceTimersByTime(500))
@@ -63,9 +65,9 @@ describe('useGameEngine', () => {
   it('resets the run state when new actions are played', () => {
     const { result } = renderHook(() => useGameEngine())
 
-    act(() => result.current.play([mover(1, 2), girar(180), recoger()]))
+    act(() => result.current.play([mover(-1, 0), girar(180), recoger()]))
     act(() => vi.advanceTimersByTime(1500))
-    expect(result.current.position).toEqual({ x: 1, y: 2 })
+    expect(result.current.position).toEqual({ x: -1, y: 0 })
     expect(result.current.rotation).toBe(180)
     expect(result.current.inventory).toBe(1)
 
@@ -96,10 +98,10 @@ describe('useGameEngine', () => {
     expect(result.current.isPlaying).toBe(false)
   })
 
-  it('detects victory when the golem reaches the goal', () => {
+  it('detects victory when the golem reaches the cell next to the goal', () => {
     const { result } = renderHook(() => useGameEngine())
 
-    act(() => result.current.play([mover(-2, 0), mover(0, 2), mover(2, 2)]))
+    act(() => result.current.play([mover(-2, 0), mover(0, 2), mover(1, 2)]))
 
     act(() => vi.advanceTimersByTime(500))
     expect(result.current.position).toEqual({ x: -2, y: 0 })
@@ -110,8 +112,23 @@ describe('useGameEngine', () => {
     expect(result.current.isWon).toBe(false)
 
     act(() => vi.advanceTimersByTime(500))
-    expect(result.current.position).toEqual({ x: 2, y: 2 })
+    expect(result.current.position).toEqual({ x: 1, y: 2 })
     expect(result.current.isWon).toBe(true)
+    expect(result.current.isPlaying).toBe(false)
+  })
+
+  it('does not move into a fixed station', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    // El caldero (2, 2) es una estación fija: no se puede pisar.
+    act(() => result.current.play([mover(2, 2)]))
+    act(() => vi.advanceTimersByTime(500))
+
+    expect(result.current.position).toEqual({ x: -2, y: -2 })
+    expect(result.current.isWon).toBe(false)
+    expect(result.current.isPlaying).toBe(true)
+
+    act(() => vi.advanceTimersByTime(500))
     expect(result.current.isPlaying).toBe(false)
   })
 
@@ -129,9 +146,9 @@ describe('useGameEngine', () => {
   it('reiniciar nivel restablece posición, rotación e inventario', () => {
     const { result } = renderHook(() => useGameEngine())
 
-    act(() => result.current.play([mover(1, 2), recoger()]))
+    act(() => result.current.play([mover(-1, 0), recoger()]))
     act(() => vi.advanceTimersByTime(1000))
-    expect(result.current.position).toEqual({ x: 1, y: 2 })
+    expect(result.current.position).toEqual({ x: -1, y: 0 })
     expect(result.current.inventory).toBe(1)
 
     act(() => result.current.resetLevel())
@@ -140,5 +157,35 @@ describe('useGameEngine', () => {
     expect(result.current.inventory).toBe(0)
     expect(result.current.isWon).toBe(false)
     expect(result.current.isPlaying).toBe(false)
+  })
+
+  it('plants and harvests only on a planter cell', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    // La maceta está en (-1, 1). Primero hay que moverse hasta ella.
+    act(() => result.current.play([mover(-1, 1), plantar(), cosechar()]))
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.position).toEqual({ x: -1, y: 1 })
+
+    // plantar() deja la maceta en 'planted'
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.plantersState['-1,1']).toBe('planted')
+    expect(result.current.inventory).toBe(0)
+
+    // Al siguiente tick la planta crece y cosechar() la recolecta.
+    act(() => vi.advanceTimersByTime(500))
+    expect(result.current.inventory).toBe(1)
+    expect(result.current.plantersState['-1,1']).toBeUndefined()
+  })
+
+  it('ignores plantar and cosechar outside a planter', () => {
+    const { result } = renderHook(() => useGameEngine())
+
+    // (-2, -2) es el inicio y no es maceta.
+    act(() => result.current.play([plantar(), cosechar()]))
+    act(() => vi.advanceTimersByTime(1000))
+
+    expect(result.current.plantersState).toEqual({})
+    expect(result.current.inventory).toBe(0)
   })
 })

@@ -2,6 +2,8 @@ export const ACTION = Object.freeze({
   MOVER: 'MOVER',
   GIRAR: 'GIRAR',
   RECOGER: 'RECOGER',
+  PLANTAR: 'PLANTAR',
+  COSECHAR: 'COSECHAR',
 })
 
 export function isValidAction(action) {
@@ -15,7 +17,10 @@ export function isValidAction(action) {
     return Number.isFinite(action.grados)
   }
 
-  return action.action === ACTION.RECOGER
+  // plantar() y cosechar() no llevan argumentos; solo se valida el tipo.
+  return action.action === ACTION.RECOGER ||
+    action.action === ACTION.PLANTAR ||
+    action.action === ACTION.COSECHAR
 }
 
 export function normalizeActions(actions) {

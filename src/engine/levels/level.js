@@ -3,6 +3,14 @@ const isInteger = Number.isInteger
 const asCoordinate = (point) =>
   point && isInteger(point.x) && isInteger(point.y) ? { x: point.x, y: point.y } : null
 
+const STATION_TYPES = ['cauldron', 'hopper']
+
+const asStation = (point) => {
+  const coordinate = asCoordinate(point)
+  if (!coordinate) return null
+  return { ...coordinate, type: STATION_TYPES.includes(point?.type) ? point.type : 'cauldron' }
+}
+
 const sameCoordinate = (a, b) => a?.x === b?.x && a?.y === b?.y
 
 export function validateLevel(input) {
@@ -24,16 +32,39 @@ export function validateLevel(input) {
 
   const start = asCoordinate(input.start)
   const goal = asCoordinate(input.goal)
-  const obstacles = Array.isArray(input.obstacles ?? [])
-    ? input.obstacles.map(asCoordinate)
-    : null
+  const rawObstacles = input.obstacles ?? []
+  const rawPlanters = input.planters ?? []
+  const rawStations = input.stations ?? []
+  const obstacles = Array.isArray(rawObstacles) ? rawObstacles.map(asCoordinate) : null
+  const planters = Array.isArray(rawPlanters) ? rawPlanters.map(asCoordinate) : null
+  const stations = Array.isArray(rawStations) ? rawStations.map(asStation) : null
 
   if (!start) errors.push('La posición inicial debe tener x e y enteros.')
   if (!goal) errors.push('El objetivo debe tener x e y enteros.')
   if (!obstacles) errors.push('Los obstáculos deben ser un arreglo de coordenadas enteras.')
+  if (!planters) errors.push('Las macetas deben ser un arreglo de coordenadas enteras.')
+  if (!stations) errors.push('Las estaciones deben ser un arreglo con coordenadas enteras.')
 
   if (board && start && !isWithinBoard(start, board)) errors.push('La posición inicial está fuera del tablero.')
   if (board && goal && !isWithinBoard(goal, board)) errors.push('El objetivo está fuera del tablero.')
+
+  if (planters) {
+    planters.forEach((planter, index) => {
+      if (!planter) errors.push(`La maceta ${index + 1} no tiene coordenadas enteras.`)
+      else if (board && !isWithinBoard(planter, board)) {
+        errors.push(`La maceta ${index + 1} está fuera del tablero.`)
+      }
+    })
+  }
+
+  if (stations) {
+    stations.forEach((station, index) => {
+      if (!station) errors.push(`La estación ${index + 1} no tiene coordenadas enteras.`)
+      else if (board && !isWithinBoard(station, board)) {
+        errors.push(`La estación ${index + 1} está fuera del tablero.`)
+      }
+    })
+  }
 
   if (obstacles) {
     obstacles.forEach((obstacle, index) => {
@@ -73,6 +104,8 @@ export function createLevel(input) {
     }),
     goal: Object.freeze(asCoordinate(input.goal)),
     obstacles: Object.freeze((input.obstacles ?? []).map((obstacle) => Object.freeze(asCoordinate(obstacle)))),
+    planters: Object.freeze((input.planters ?? []).map((planter) => Object.freeze(asCoordinate(planter)))),
+    stations: Object.freeze((input.stations ?? []).map((station) => Object.freeze(asStation(station)))),
   })
 }
 
@@ -92,6 +125,20 @@ export function clampPointToBoard(point, board) {
 
 export function isObstacle(point, obstacles = []) {
   return obstacles.some((obstacle) => sameCoordinate(obstacle, point))
+}
+
+export function isPlanter(point, planters = []) {
+  return planters.some((planter) => sameCoordinate(planter, point))
+}
+
+export function isStation(point, stations = []) {
+  return stations.some((station) => sameCoordinate(station, point))
+}
+
+// Vecindad ortogonal (arriba, abajo, izquierda, derecha): la casilla de al lado.
+export function isAdjacent(point, target) {
+  if (!point || !target) return false
+  return Math.abs(point.x - target.x) + Math.abs(point.y - target.y) === 1
 }
 
 export function isGoal(point, goal) {

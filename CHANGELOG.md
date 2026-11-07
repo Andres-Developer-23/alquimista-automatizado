@@ -9,16 +9,21 @@ y el proyecto usa [Versionado Semántico](https://semver.org/lang/es/).
 
 ### Added
 
-- Suelo del taller (`PlaneGeometry`) en `y = 0` para que el Gólem se apoye.
-- Cuatro paredes bajas (`BoxGeometry`) que encierran el tablero 5x5.
-- Sombras básicas en Canvas, suelo, paredes, obstáculos y Gólem.
-- Gólem con modelo CC0 bajo poli (`public/models/golem.glb`, Poly.pizza /m/71gomWolax) cargado con `useGLTF`.
-- Test de renderizado de escena y Gólem.
+- Suelo de laboratorio con baldosas de piedra (tablero 5x5) en lugar del suelo de madera de la tienda.
+- Macetas mágicas (cajas de madera con tierra) donde se ejecutan `plantar()` y `cosechar()`.
+- Comandos Python `plantar()` y `cosechar()` inyectados en el Worker, validos solo en una maceta.
+- Estado de crecimiento de macetas (`planted` → `grown`) que avanza con cada tick.
+- Estaciones fijas no transitables: caldero humeante (meta) y cofre/tolva para enviar la poción.
+- Victoria al situarse en la casilla de al lado de la estación objetivo (ya no se pisa el caldero).
+- Obstáculos del laboratorio que bloquean el camino y obligan a programar esquivas.
+- Tests de macetas, estaciones y victoria adyacente.
 
 ### Changed
 
-- `Golem.jsx` sustituye la caja azul por el modelo 3D CC0 con interpolación `dampAxis`/`dampAngle` preservada.
-- `AlchemistScene.jsx` habilita sombras y renderiza suelo, paredes y grid.
+- `AlchemistScene.jsx` sustituye los props de tienda por el escenario de laboratorio (baldosas, macetas, caldero, cofre).
+- `useGameEngine` gestiona macetas, crecimiento y bloqueo de estaciones; la victoria es adyacente a la meta.
+- `level.js` valida y expone `planters` y `stations` más los helpers `isPlanter`, `isStation` e `isAdjacent`.
+- `actionTypes.js` reconoce `PLANTAR` y `COSECHAR`.
 
 ## [1.0.0] - 2026-11-06
 
